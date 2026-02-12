@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kensei: Way of the Blade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Space Grotesk', 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+            background-color: #f3f3f3;
+        }
+        .anime-border {
+            box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+        }
+        .anime-border-sm {
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+        }
+        .anime-border-pink {
+            box-shadow: 6px 6px 0px 0px #FF6B9D;
+        }
+        .anime-border-cyan {
+            box-shadow: 6px 6px 0px 0px #4ECDC4;
+        }
+        .anime-border-red {
+            box-shadow: 6px 6px 0px 0px #e11d48;
+        }
+        .anime-border-purple {
+            box-shadow: 6px 6px 0px 0px #a855f7;
+        }
+        
+        /* Cherry Blossom Petal Animation */
+        .petal {
+            position: fixed;
+            background-color: #ffb7c5;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translate(0, -10%) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translate(100px, 110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Spirit Dragon Glow */
+        .spirit-glow {
+            filter: drop-shadow(0 0 15px #a855f7) drop-shadow(0 0 30px #7c3aed);
+        }
+        .spirit-bg-glow {
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(-1deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(-1deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -2000;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(1.05); }
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .kensei-footer {
+            background-color: #e11d48;
+            color: white;
+            padding: 2rem;
+            border-top: 4px solid black;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e11d48;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #be123c;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "recharts": "https://esm.sh/recharts@^3.7.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-[#F8F8F8] text-[#2D2D2D] transition-colors duration-300">
+    <div id="root"></div>
+    <!-- Petal Generator script -->
+    <script>
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.width = Math.random() * 10 + 5 + 'px';
+            petal.style.height = petal.style.width;
+            petal.style.animationDuration = Math.random() * 5 + 5 + 's';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 10000);
+        }
+        setInterval(createPetal, 500);
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
