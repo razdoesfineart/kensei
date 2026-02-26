@@ -2,31 +2,33 @@ import { Achievement, Trade } from './types';
 
 export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] = [
   // Bronze Tier
-  { id: 'first_blood', name: 'First Blood', description: 'Record your first trade', icon: '⚔️', kanji: '初', requirement: '1 trade', maxProgress: 1, tier: 'bronze' },
-  { id: 'triple_strike', name: 'Triple Strike', description: 'Complete 3 trades in one day', icon: '🎯', kanji: '三', requirement: '3 trades in a day', maxProgress: 3, tier: 'bronze' },
-  { id: 'first_victory', name: 'First Victory', description: 'Win your first trade', icon: '🏆', kanji: '勝', requirement: '1 winning trade', maxProgress: 1, tier: 'bronze' },
-  { id: 'discipline_initiate', name: 'Discipline Initiate', description: 'Complete a trade with full checklist', icon: '📜', kanji: '律', requirement: '1 disciplined trade', maxProgress: 1, tier: 'bronze' },
+  { id: 'first_blood', name: 'First Blood', description: 'Record your first trade', icon: 'âï¸', kanji: 'å', requirement: '1 trade', maxProgress: 1, tier: 'bronze' },
+  { id: 'triple_strike', name: 'Triple Strike', description: 'Complete 3 trades in one day', icon: 'ð¯', kanji: 'ä¸', requirement: '3 trades in a day', maxProgress: 3, tier: 'bronze' },
+  { id: 'first_victory', name: 'First Victory', description: 'Win your first trade', icon: 'ð', kanji: 'å', requirement: '1 winning trade', maxProgress: 1, tier: 'bronze' },
+  { id: 'discipline_initiate', name: 'Discipline Initiate', description: 'Complete a trade with full checklist', icon: 'ð', kanji: 'å¾', requirement: '1 disciplined trade', maxProgress: 1, tier: 'bronze' },
 
   // Silver Tier
-  { id: 'winning_streak_5', name: 'Hot Streak', description: 'Win 5 trades in a row', icon: '🔥', kanji: '連', requirement: '5 consecutive wins', maxProgress: 5, tier: 'silver' },
-  { id: 'century_warrior', name: 'Century Warrior', description: 'Complete 100 total trades', icon: '💯', kanji: '百', requirement: '100 trades', maxProgress: 100, tier: 'silver' },
-  { id: 'zen_master', name: 'Zen Master', description: 'Trade while calm 10 times', icon: '🧘', kanji: '禅', requirement: '10 calm trades', maxProgress: 10, tier: 'silver' },
-  { id: 'profit_hunter', name: 'Profit Hunter', description: 'Accumulate $1,000 in profits', icon: '💰', kanji: '富', requirement: '$1,000 total profit', maxProgress: 1000, tier: 'silver' },
-  { id: 'week_warrior', name: 'Week Warrior', description: 'Maintain a 7-day discipline streak', icon: '📅', kanji: '週', requirement: '7-day streak', maxProgress: 7, tier: 'silver' },
+  { id: 'winning_streak_5', name: 'Hot Streak', description: 'Win 5 trades in a row', icon: 'ð¥', kanji: 'é£', requirement: '5 consecutive wins', maxProgress: 5, tier: 'silver' },
+  { id: 'century_warrior', name: 'Century Warrior', description: 'Complete 100 total trades', icon: 'ð¯', kanji: 'ç¾', requirement: '100 trades', maxProgress: 100, tier: 'silver' },
+  { id: 'zen_master', name: 'Zen Master', description: 'Trade while calm 10 times', icon: 'ð§', kanji: 'ç¦', requirement: '10 calm trades', maxProgress: 10, tier: 'silver' },
+  { id: 'profit_hunter', name: 'Profit Hunter', description: 'Accumulate $1,000 in profits', icon: 'ð°', kanji: 'å¯', requirement: '$1,000 total profit', maxProgress: 1000, tier: 'silver' },
+  { id: 'week_warrior', name: 'Week Warrior', description: 'Maintain a 7-day discipline streak', icon: 'ð', kanji: 'é±', requirement: '7-day streak', maxProgress: 7, tier: 'silver' },
 
   // Gold Tier
-  { id: 'winning_streak_10', name: 'Unstoppable', description: 'Win 10 trades in a row', icon: '⚡', kanji: '神', requirement: '10 consecutive wins', maxProgress: 10, tier: 'gold' },
-  { id: 'discipline_master', name: 'Discipline Master', description: 'Complete 50 trades with full checklist', icon: '🎖️', kanji: '師', requirement: '50 disciplined trades', maxProgress: 50, tier: 'gold' },
-  { id: 'profit_lord', name: 'Profit Lord', description: 'Accumulate $10,000 in profits', icon: '👑', kanji: '王', requirement: '$10,000 total profit', maxProgress: 10000, tier: 'gold' },
-  { id: 'month_master', name: 'Month Master', description: 'Maintain a 30-day discipline streak', icon: '🌙', kanji: '月', requirement: '30-day streak', maxProgress: 30, tier: 'gold' },
+  { id: 'winning_streak_10', name: 'Unstoppable', description: 'Win 10 trades in a row', icon: 'â¡', kanji: 'ç¥', requirement: '10 consecutive wins', maxProgress: 10, tier: 'gold' },
+  { id: 'discipline_master', name: 'Discipline Master', description: 'Complete 50 trades with full checklist', icon: 'ðï¸', kanji: 'å¸«', requirement: '50 disciplined trades', maxProgress: 50, tier: 'gold' },
+  { id: 'profit_lord', name: 'Profit Lord', description: 'Accumulate $10,000 in profits', icon: 'ð', kanji: 'ç', requirement: '$10,000 total profit', maxProgress: 10000, tier: 'gold' },
+  { id: 'month_master', name: 'Month Master', description: 'Maintain a 30-day discipline streak', icon: 'ð', kanji: 'æ', requirement: '30-day streak', maxProgress: 30, tier: 'gold' },
 
   // Legendary Tier
-  { id: 'void_sovereign', name: 'Void Sovereign', description: 'Evolve your guardian to max level', icon: '🐉', kanji: '龍', requirement: 'Level 5 Guardian', maxProgress: 30, tier: 'legendary' },
-  { id: 'perfect_month', name: 'Perfect Month', description: '70%+ win rate with 50+ trades in a month', icon: '✨', kanji: '完', requirement: '70% win rate, 50 trades', maxProgress: 100, tier: 'legendary' },
-  { id: 'samurai_legend', name: 'Samurai Legend', description: 'Unlock all other achievements', icon: '🏯', kanji: '伝', requirement: 'All achievements', maxProgress: 16, tier: 'legendary' },
+  { id: 'void_sovereign', name: 'Void Sovereign', description: 'Evolve your guardian to max level', icon: 'ð', kanji: 'é¾', requirement: 'Level 5 Guardian', maxProgress: 30, tier: 'legendary' },
+  { id: 'perfect_month', name: 'Perfect Month', description: '70%+ win rate with 50+ trades in a month', icon: 'â¨', kanji: 'å®', requirement: '70% win rate, 50 trades', maxProgress: 100, tier: 'legendary' },
+  { id: 'samurai_legend', name: 'Samurai Legend', description: 'Unlock all other achievements', icon: 'ð¯', kanji: 'ä¼', requirement: 'All achievements', maxProgress: 16, tier: 'legendary' },
 
   // Mythical Tier
-  { id: 'kensei', name: 'Kensei', description: '90%+ win rate with 100+ trades in a month — the way of the blade master', icon: '⛩️', kanji: '剣聖', requirement: '90% win rate, 100 trades/month', maxProgress: 100, tier: 'mythical' },
+  { id: 'kensei', name: 'Kensei', description: '90%+ win rate with 100+ trades in a month â the way of the blade master', icon: 'â©ï¸', kanji: 'å£è', requirement: '90% win rate, 100 trades/month', maxProgress: 100, tier: 'mythical' },
+  // Mythical Tier - The ultimate achievement
+  { id: 'kensei', name: 'Kensei', description: '90%+ win rate with 100+ trades in a month', icon: '⛩️', kanji: '剣聖', requirement: '90% win rate, 100 trades/month', maxProgress: 100, tier: 'mythical' },
 ];
 
 export function calculateAchievementProgress(
@@ -86,6 +88,13 @@ export function calculateAchievementProgress(
       const winRate = monthTrades.length > 0 ? (monthWins.length / monthTrades.length) * 100 : 0;
       if (monthTrades.length >= 100 && winRate >= 90) return 100;
       return Math.min(monthTrades.length, 50) + (winRate >= 90 ? 50 : 0);
+    }
+    case 'kensei': {
+      const mTrades = getMonthTrades();
+      const mWins = mTrades.filter(t => t.outcome === 'Win');
+      const mWinRate = mTrades.length > 0 ? (mWins.length / mTrades.length) * 100 : 0;
+      if (mTrades.length >= 100 && mWinRate >= 90) return 100;
+      return Math.min(mTrades.length, 50) + (mWinRate >= 90 ? 50 : 0);
     }
     case 'samurai_legend': return 0;
     default: return 0;
@@ -158,8 +167,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'first_blood',
     name: 'First Blood',
     description: 'Record your first trade',
-    icon: '⚔️',
-    kanji: '初',
+    icon: 'âï¸',
+    kanji: 'å',
     requirement: '1 trade',
     maxProgress: 1,
     tier: 'bronze'
@@ -168,8 +177,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'triple_strike',
     name: 'Triple Strike',
     description: 'Complete 3 trades in one day',
-    icon: '🎯',
-    kanji: '三',
+    icon: 'ð¯',
+    kanji: 'ä¸',
     requirement: '3 trades in a day',
     maxProgress: 3,
     tier: 'bronze'
@@ -178,8 +187,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'first_victory',
     name: 'First Victory',
     description: 'Win your first trade',
-    icon: '🏆',
-    kanji: '勝',
+    icon: 'ð',
+    kanji: 'å',
     requirement: '1 winning trade',
     maxProgress: 1,
     tier: 'bronze'
@@ -188,8 +197,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'discipline_initiate',
     name: 'Discipline Initiate',
     description: 'Complete a trade with full checklist',
-    icon: '📜',
-    kanji: '律',
+    icon: 'ð',
+    kanji: 'å¾',
     requirement: '1 disciplined trade',
     maxProgress: 1,
     tier: 'bronze'
@@ -200,8 +209,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'winning_streak_5',
     name: 'Hot Streak',
     description: 'Win 5 trades in a row',
-    icon: '🔥',
-    kanji: '連',
+    icon: 'ð¥',
+    kanji: 'é£',
     requirement: '5 consecutive wins',
     maxProgress: 5,
     tier: 'silver'
@@ -210,8 +219,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'century_warrior',
     name: 'Century Warrior',
     description: 'Complete 100 total trades',
-    icon: '💯',
-    kanji: '百',
+    icon: 'ð¯',
+    kanji: 'ç¾',
     requirement: '100 trades',
     maxProgress: 100,
     tier: 'silver'
@@ -220,8 +229,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'zen_master',
     name: 'Zen Master',
     description: 'Trade while calm 10 times',
-    icon: '🧘',
-    kanji: '禅',
+    icon: 'ð§',
+    kanji: 'ç¦',
     requirement: '10 calm trades',
     maxProgress: 10,
     tier: 'silver'
@@ -230,8 +239,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'profit_hunter',
     name: 'Profit Hunter',
     description: 'Accumulate $1,000 in profits',
-    icon: '💰',
-    kanji: '富',
+    icon: 'ð°',
+    kanji: 'å¯',
     requirement: '$1,000 total profit',
     maxProgress: 1000,
     tier: 'silver'
@@ -240,8 +249,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'week_warrior',
     name: 'Week Warrior',
     description: 'Maintain a 7-day discipline streak',
-    icon: '📅',
-    kanji: '週',
+    icon: 'ð',
+    kanji: 'é±',
     requirement: '7-day streak',
     maxProgress: 7,
     tier: 'silver'
@@ -252,8 +261,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'winning_streak_10',
     name: 'Unstoppable',
     description: 'Win 10 trades in a row',
-    icon: '⚡',
-    kanji: '神',
+    icon: 'â¡',
+    kanji: 'ç¥',
     requirement: '10 consecutive wins',
     maxProgress: 10,
     tier: 'gold'
@@ -262,8 +271,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'discipline_master',
     name: 'Discipline Master',
     description: 'Complete 50 trades with full checklist',
-    icon: '🎖️',
-    kanji: '師',
+    icon: 'ðï¸',
+    kanji: 'å¸«',
     requirement: '50 disciplined trades',
     maxProgress: 50,
     tier: 'gold'
@@ -272,8 +281,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'profit_lord',
     name: 'Profit Lord',
     description: 'Accumulate $10,000 in profits',
-    icon: '👑',
-    kanji: '王',
+    icon: 'ð',
+    kanji: 'ç',
     requirement: '$10,000 total profit',
     maxProgress: 10000,
     tier: 'gold'
@@ -282,8 +291,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'month_master',
     name: 'Month Master',
     description: 'Maintain a 30-day discipline streak',
-    icon: '🌙',
-    kanji: '月',
+    icon: 'ð',
+    kanji: 'æ',
     requirement: '30-day streak',
     maxProgress: 30,
     tier: 'gold'
@@ -294,8 +303,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'void_sovereign',
     name: 'Void Sovereign',
     description: 'Evolve your guardian to max level',
-    icon: '🐉',
-    kanji: '龍',
+    icon: 'ð',
+    kanji: 'é¾',
     requirement: 'Level 5 Guardian',
     maxProgress: 30,
     tier: 'legendary'
@@ -303,10 +312,10 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
   {
     id: 'perfect_month',
     name: 'Perfect Month',
-    description: '80%+ win rate with 50+ trades in a month',
-    icon: '✨',
-    kanji: '完',
-    requirement: '80% win rate, 50 trades',
+    description: '70%+ win rate with 50+ trades in a month',
+    icon: 'â¨',
+    kanji: 'å®',
+    requirement: '70% win rate, 50 trades',
     maxProgress: 100,
     tier: 'legendary'
   },
@@ -314,8 +323,8 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
     id: 'samurai_legend',
     name: 'Samurai Legend',
     description: 'Unlock all other achievements',
-    icon: '🏯',
-    kanji: '伝',
+    icon: 'ð¯',
+    kanji: 'ä¼',
     requirement: 'All achievements',
     maxProgress: 14,
     tier: 'legendary'
@@ -392,8 +401,8 @@ export function calculateAchievementProgress(
       const monthTrades = trades.filter(t => new Date(t.timestamp) >= thirtyDaysAgo);
       const monthWins = monthTrades.filter(t => t.outcome === 'Win');
       const winRate = monthTrades.length > 0 ? (monthWins.length / monthTrades.length) * 100 : 0;
-      if (monthTrades.length >= 50 && winRate >= 80) return 100;
-      return Math.min(monthTrades.length, 50) + (winRate >= 80 ? 50 : 0);
+      if (monthTrades.length >= 50 && winRate >= 70) return 100;
+      return Math.min(monthTrades.length, 50) + (winRate >= 70 ? 50 : 0);
     case 'samurai_legend':
       // Count unlocked achievements (excluding this one)
       return 0; // Will be calculated separately
@@ -433,7 +442,7 @@ export function checkNewAchievements(
   if (legendIndex !== -1) {
     const unlockedCount = updated.filter(a => a.id !== 'samurai_legend' && a.unlockedAt).length;
     updated[legendIndex].progress = unlockedCount;
-    if (unlockedCount >= 14 && !updated[legendIndex].unlockedAt) {
+    if (unlockedCount >= 15 && !updated[legendIndex].unlockedAt) {
       updated[legendIndex].unlockedAt = new Date().toISOString();
       newlyUnlocked.push(updated[legendIndex]);
     }
@@ -448,6 +457,7 @@ export function getTierColor(tier: Achievement['tier']): string {
     case 'silver': return '#C0C0C0';
     case 'gold': return '#FFD700';
     case 'legendary': return '#a855f7';
+    case 'mythical': return '#e11d48';
     default: return '#666';
   }
 }
@@ -458,6 +468,7 @@ export function getTierBg(tier: Achievement['tier']): string {
     case 'silver': return 'bg-gray-100 dark:bg-gray-800/50';
     case 'gold': return 'bg-yellow-100 dark:bg-yellow-900/20';
     case 'legendary': return 'bg-purple-100 dark:bg-purple-900/20';
+    case 'mythical': return 'bg-rose-100 dark:bg-rose-900/20';
     default: return 'bg-gray-100';
   }
 }
