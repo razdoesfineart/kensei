@@ -19,7 +19,7 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements }) => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-black dark:text-white">
-            Achievements <span className="text-yellow-500">å²ç« </span>
+            Achievements <span className="text-yellow-500">Ã¥ÂÂ²Ã§Â«Â </span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 font-medium">Unlock badges by mastering the way of the samurai.</p>
         </div>
@@ -59,8 +59,8 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements }) => {
         return (
           <AnimeCard 
             key={tier} 
-            title={`${tier.charAt(0).toUpperCase() + tier.slice(1)} Tier`}
-            variant="black"
+            title={tier === 'mythical' ? '\u26E9\uFE0F Mythical Tier' : `${tier.charAt(0).toUpperCase() + tier.slice(1)} Tier`}
+            variant={tier === 'mythical' ? 'pink' : 'black'}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {tierAchievements.map(achievement => (
