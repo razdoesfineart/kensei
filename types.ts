@@ -1,9 +1,9 @@
 export interface Trade {
   id: string;
-  signature?: string; // On-chain transaction signature
+  signature?: string;
   tokenName: string;
-  tokenMint?: string; // Token mint address
-  tokenLogo?: string; // Token logo URL
+  tokenMint?: string;
+  tokenLogo?: string;
   tradeType: 'Long' | 'Short' | 'BUY' | 'SELL';
   entryPrice: number;
   exitPrice: number;
@@ -15,11 +15,10 @@ export interface Trade {
   passedChecklist: boolean;
   pnl: number;
   pnlPercent: number;
-  // Chain data
   isFromChain?: boolean;
-  amount?: number; // Token amount
-  currentPrice?: number; // Live price
-  logCompleted?: boolean; // Did user complete the log?
+  amount?: number;
+  currentPrice?: number;
+  logCompleted?: boolean;
 }
 
 export interface DetectedTrade {
@@ -33,7 +32,6 @@ export interface DetectedTrade {
   pricePerToken: number;
   totalValue: number;
   timestamp: number;
-  // User must fill:
   emotion?: string;
   checklist?: boolean;
   notes?: string;
@@ -103,7 +101,7 @@ export interface Achievement {
   unlockedAt?: string;
   progress: number;
   maxProgress: number;
-  tier: 'bronze' | 'silver' | 'gold' | 'legendary';
+  tier: 'bronze' | 'silver' | 'gold' | 'legendary' | 'mythical';
 }
 
 export interface AppSettings {
@@ -114,11 +112,10 @@ export interface AppSettings {
   consecutiveLossLimit: number;
   cooldownDuration: number;
   soundEnabled: boolean;
-  // Wallet tracking
   trackedWallet: string | null;
   heliusApiKey: string;
   autoTrackEnabled: boolean;
-  pollingInterval: number; // seconds
+  pollingInterval: number;
 }
 
 export interface CooldownState {
@@ -136,7 +133,7 @@ export interface EscalatingCooldown {
 export interface PendingTrade {
   trade: DetectedTrade;
   detectedAt: string;
-  deadlineAt: string; // 2 minutes to log
+  deadlineAt: string;
   logCompleted: boolean;
 }
 
@@ -149,7 +146,6 @@ export interface AppState {
   escalatingCooldown: EscalatingCooldown;
   lastRealityCheck: string | null;
   consecutiveLosses: number;
-  // Wallet tracking
   trackedWallet: TrackedWallet | null;
   pendingTrades: PendingTrade[];
   holdings: WalletHolding[];
