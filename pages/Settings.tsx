@@ -32,7 +32,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, updateSettings, onClearDa
               {settings.isDarkMode ? <Moon /> : <Sun />}
             </div>
             <div>
-              <h4 className="font-black uppercase text-sm text-black dark:text-white">Dark Samurai Mode</h4>
+              <h4 className="font-black uppercase text-sm text-black dark:text-white">Dark Mode</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">Protect your eyes during night strikes</p>
             </div>
           </div>
@@ -72,10 +72,11 @@ const Settings: React.FC<SettingsProps> = ({ settings, updateSettings, onClearDa
                   onChange={(e) => updateSettings({ realityCheckInterval: parseInt(e.target.value) })}
                   className="bg-white dark:bg-gray-800 border-2 border-black rounded-xl px-3 py-2 font-bold text-sm text-black dark:text-white"
                 >
-                  <option value={15}>15 minutes</option>
-                  <option value={30}>30 minutes</option>
-                  <option value={45}>45 minutes</option>
                   <option value={60}>1 hour</option>
+                  <option value={120}>2 hours</option>
+                  <option value={180}>3 hours</option>
+                  <option value={240}>4 hours</option>
+                  <option value={300}>5 hours</option>
                 </select>
               </label>
             </div>
@@ -171,7 +172,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, updateSettings, onClearDa
       </div>
 
       <div className="text-center py-10">
-        <p className="font-black text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-gray-500">剣聖 Kensei v4.0.0</p>
+        <p className="font-black text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-gray-500">å£è Kensei v4.4</p>
         <p className="text-[10px] font-bold mt-1 text-gray-400 dark:text-gray-600">Way of the Blade</p>
       </div>
     </div>
