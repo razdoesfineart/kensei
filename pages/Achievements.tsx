@@ -12,14 +12,14 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements }) => {
   const unlockedCount = achievements.filter(a => a.unlockedAt).length;
   const totalCount = achievements.length;
   
-  const tiers = ['bronze', 'silver', 'gold', 'legendary'] as const;
+  const tiers = ['bronze', 'silver', 'gold', 'legendary', 'mythical'] as const;
 
   return (
     <div className="space-y-8 pb-10">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-black dark:text-white">
-            Achievements <span className="text-yellow-500">勲章</span>
+            Achievements <span className="text-yellow-500">å²ç« </span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 font-medium">Unlock badges by mastering the way of the samurai.</p>
         </div>
@@ -31,7 +31,7 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements }) => {
       </div>
 
       {/* Progress Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {tiers.map(tier => {
           const tierAchievements = achievements.filter(a => a.tier === tier);
           const tierUnlocked = tierAchievements.filter(a => a.unlockedAt).length;
