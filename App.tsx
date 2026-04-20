@@ -14,6 +14,7 @@ import RealityCheckModal from './components/RealityCheckModal';
 import TradeAlertModal from './components/TradeAlertModal';
 import { ACHIEVEMENTS_DATA, checkNewAchievements } from './achievements';
 import { pollNewTransactions, fetchWalletHoldings, formatWalletAddress } from './helius';
+import { fetchTrades, saveTrade, fetchUserState, saveUserState, fetchAchievements, saveAchievements, clearAllUserData, signOut } from './db';
 
 // Debug helper - logs with timestamp
 const dbg = (msg: string, ...args: any[]) => {
@@ -42,7 +43,8 @@ const DEFAULT_ESCALATING_COOLDOWN: EscalatingCooldown = {
 
 const COOLDOWN_PENALTIES = [2, 5, 10, 20, 60];
 
-const App: React.FC = () => {
+const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmail }) => {
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [currentView, setCurrentView] = useState<View>(View.HOME);
   
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -122,6 +124,57 @@ const App: React.FC = () => {
   useEffect(() => { pendingTradesRef.current = pendingTrades; }, [pendingTrades]);
   useEffect(() => { tradesRef.current = trades; }, [trades]);
   useEffect(() => { trackedWalletRef.current = trackedWallet; }, [trackedWallet]);
+
+  // Load from Supabase
+  useEffect(() => {
+    if (!userId) return;
+    const load = async () => {
+      try {
+        const [dbTrades, dbState, dbAch] = await Promise.all([fetchTrades(userId), fetchUserState(userId), fetchAchievements(userId)]);
+        if (dbTrades.length > 0) setTrades(dbTrades);
+        if (dbState) {
+          if (dbState.streak !== undefined) setStreak(dbState.streak);
+          if (dbState.consecutive_losses !== undefined) setConsecutiveLosses(dbState.consecutive_losses);
+          if (dbState.last_reality_check) setLastRealityCheck(dbState.last_reality_check);
+          if (dbState.last_polled_signature) setLastPolledSignature(dbState.last_polled_signature);
+          if (dbState.settings) setSettings(p => ({ ...p, ...dbState.settings }));
+          if (dbState.cooldown) setCooldown(dbState.cooldown);
+          if (dbState.escalating_cooldown) setEscalatingCooldown(dbState.escalating_cooldown);
+          if (dbState.tracked_wallet) setTrackedWallet(dbState.tracked_wallet);
+          if (dbState.holdings) setHoldings(dbState.holdings);
+          if (dbState.pending_trades) setPendingTrades(dbState.pending_trades);
+        }
+        if (dbAch.length > 0) setAchievements(p => p.map(a => { const d = dbAch.find(x => x.id === a.id); return d ? { ...a, progress: d.progress, unlockedAt: d.unlocked_at || undefined } : a; }));
+      } catch (e) { console.error('Supabase load error:', e); }
+      setDataLoaded(true);
+    };
+    load();
+  }, [userId]);
+
+  // Save trades to Supabase
+  useEffect(() => {
+    if (!userId || !dataLoaded) return;
+    const t = setTimeout(() => { trades.forEach(tr => saveTrade(userId, tr).catch(console.error)); }, 2000);
+    return () => clearTimeout(t);
+  }, [trades, userId, dataLoaded]);
+
+  // Save state to Supabase
+  useEffect(() => {
+    if (!userId || !dataLoaded) return;
+    const t = setTimeout(() => {
+      saveUserState(userId, { streak, consecutiveLosses, lastRealityCheck, lastPolledSignature, settings, cooldown, escalatingCooldown, trackedWallet, holdings, pendingTrades }).catch(console.error);
+    }, 2000);
+    return () => clearTimeout(t);
+  }, [streak, consecutiveLosses, settings, cooldown, escalatingCooldown, trackedWallet, holdings, pendingTrades, userId, dataLoaded]);
+
+  // Save achievements to Supabase
+  useEffect(() => {
+    if (!userId || !dataLoaded) return;
+    const t = setTimeout(() => { saveAchievements(userId, achievements).catch(console.error); }, 2000);
+    return () => clearTimeout(t);
+  }, [achievements, userId, dataLoaded]);
+
+  const handleLogout = async () => { try { await signOut(); window.location.reload(); } catch (e) { console.error(e); } };
 
   // Save to localStorage
   useEffect(() => { localStorage.setItem('trades', JSON.stringify(trades)); }, [trades]);
@@ -416,6 +469,7 @@ const App: React.FC = () => {
     setAchievements(ACHIEVEMENTS_DATA.map(a => ({ ...a, progress: 0 })));
     setPendingTrades([]);
     localStorage.clear();
+    if (userId) clearAllUserData(userId).catch(console.error);
   };
 
   const unlockedAchievements = achievements.filter(a => a.unlockedAt).length;
@@ -449,7 +503,7 @@ const App: React.FC = () => {
       <div className="flex-1 flex flex-col overflow-x-hidden">
         <div className="h-32 md:h-48 pointer-events-none opacity-80 overflow-hidden relative">
           <div className="absolute top-0 right-0 p-4 flex flex-col items-end">
-            <span className="text-6xl md:text-8xl font-black opacity-10 select-none">剣聖</span>
+            <span className="text-6xl md:text-8xl font-black opacity-10 select-none">å£è</span>
           </div>
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-pink-100/50 via-transparent to-transparent"></div>
         </div>
@@ -460,13 +514,13 @@ const App: React.FC = () => {
 
         <footer className="kensei-footer mt-auto flex items-center justify-between gap-4 p-4 border-t-4 border-black bg-black text-white">
           <div className="flex items-center gap-4">
-            <span className="text-3xl font-black">剣聖</span>
+            <span className="text-3xl font-black">å£è</span>
             <div className="text-xs font-bold opacity-60">
               <span>Kensei v4.4</span>
-              {isTracking && <span className="ml-2 text-green-400">● Live</span>}
+              {isTracking && <span className="ml-2 text-green-400">â Live</span>}
             </div>
           </div>
-          <div className="text-[10px] font-bold opacity-40">Way of the Blade</div>
+          <div className="flex items-center gap-3"><span className="text-[10px] font-bold opacity-40">{userEmail}</span><button onClick={handleLogout} className="text-[10px] font-bold text-red-400 hover:text-red-300 uppercase tracking-widest">Logout</button></div>
         </footer>
       </div>
     </div>
