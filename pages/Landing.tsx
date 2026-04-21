@@ -15,47 +15,7 @@ const Petal = ({ delay, left, size, duration }) => (
   />
 );
 
-// Samurai silhouette SVG - detailed warrior with katana
-const SamuraiSilhouette = () => (
-  <div style={{ position: 'absolute', bottom: '0', right: '-20px', opacity: 0.08, pointerEvents: 'none', zIndex: 0 }}>
-    <svg width="500" height="700" viewBox="0 0 500 700" fill="white">
-      {/* Katana blade extending upward */}
-      <path d="M320 10 L322 8 L324 150 L326 280 L324 285 L322 150 L320 10 Z" opacity="0.9"/>
-      <line x1="323" y1="10" x2="323" y2="280" stroke="white" strokeWidth="0.5" opacity="0.4"/>
-      {/* Katana handle/tsuba */}
-      <rect x="314" y="280" width="18" height="6" rx="1" opacity="0.8"/>
-      <rect x="316" y="286" width="14" height="40" rx="2" opacity="0.7"/>
-      <line x1="323" y1="290" x2="323" y2="322" stroke="rgba(0,0,0,0.3)" strokeWidth="2"/>
-      {/* Head with topknot */}
-      <ellipse cx="280" cy="340" rx="28" ry="32" />
-      <path d="M268 315 Q280 295 292 315" />
-      <path d="M280 308 Q290 290 300 295 L305 300" strokeWidth="2"/>
-      {/* Neck */}
-      <rect x="272" y="370" width="16" height="15" rx="3"/>
-      {/* Torso - kimono shape */}
-      <path d="M240 385 L320 385 L330 395 L340 500 L335 520 L325 530 L235 530 L225 520 L220 500 L230 395 Z"/>
-      {/* Kimono V-neck fold */}
-      <path d="M260 385 L280 430 L300 385" fill="rgba(0,0,0,0.15)"/>
-      {/* Obi (belt) */}
-      <rect x="228" y="470" width="104" height="20" rx="3" opacity="0.85"/>
-      {/* Right arm holding katana up */}
-      <path d="M320 395 L340 400 L350 380 L345 340 L335 320 L325 310 L320 315 L330 330 L338 360 L330 390 Z"/>
-      {/* Left arm at side */}
-      <path d="M240 395 L220 410 L210 450 L205 490 L210 495 L218 460 L228 420 L240 405 Z"/>
-      {/* Left hand */}
-      <ellipse cx="207" cy="493" rx="8" ry="6"/>
-      {/* Hakama (pants) */}
-      <path d="M235 530 L230 580 L220 650 L215 690 L240 690 L250 640 L280 640 L290 690 L315 690 L310 650 L300 580 L325 530 Z"/>
-      {/* Hakama center fold */}
-      <line x1="280" y1="530" x2="280" y2="640" stroke="rgba(0,0,0,0.15)" strokeWidth="2"/>
-      {/* Feet */}
-      <ellipse cx="228" cy="692" rx="18" ry="6"/>
-      <ellipse cx="302" cy="692" rx="18" ry="6"/>
-      {/* Kimono back details */}
-      <circle cx="280" cy="440" r="15" fill="rgba(0,0,0,0.08)" />
-    </svg>
-  </div>
-);
+
 
 // Sword slash animation on login
 const SwordSlash = ({ active, onComplete }) => {
@@ -199,9 +159,6 @@ const Landing = ({ onAuthSuccess }) => {
 
       {/* Cherry blossom petals */}
       {petals.map(p => <Petal key={p.id} {...p} />)}
-
-      {/* Samurai silhouette */}
-      <SamuraiSilhouette />
 
       {/* Sword slash overlay */}
       <SwordSlash active={showSlash} />
