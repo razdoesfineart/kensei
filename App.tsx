@@ -503,7 +503,7 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
       <div className="flex-1 flex flex-col overflow-x-hidden">
         <div className="h-32 md:h-48 pointer-events-none opacity-80 overflow-hidden relative">
           <div className="absolute top-0 right-0 p-4 flex flex-col items-end">
-            <span className="text-6xl md:text-8xl font-black opacity-10 select-none">å£è</span>
+            <span className="text-6xl md:text-8xl font-black opacity-10 select-none">剣聖</span>
           </div>
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-pink-100/50 via-transparent to-transparent"></div>
         </div>
@@ -514,10 +514,10 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
 
         <footer className="kensei-footer mt-auto flex items-center justify-between gap-4 p-4 border-t-4 border-black bg-black text-white">
           <div className="flex items-center gap-4">
-            <span className="text-3xl font-black">å£è</span>
+            <span className="text-3xl font-black">剣聖</span>
             <div className="text-xs font-bold opacity-60">
               <span>Kensei v4.4</span>
-              {isTracking && <span className="ml-2 text-green-400">â Live</span>}
+              {isTracking && <span className="ml-2 text-green-400">● Live</span>}
             </div>
           </div>
           <div className="flex items-center gap-3"><span className="text-[10px] font-bold opacity-40">{userEmail}</span><button onClick={handleLogout} className="text-[10px] font-bold text-red-400 hover:text-red-300 uppercase tracking-widest">Logout</button></div>
