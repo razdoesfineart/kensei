@@ -64,8 +64,15 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
 
   const [achievements, setAchievements] = useState<Achievement[]>(() => {
     const saved = localStorage.getItem('achievements');
-    if (saved) return JSON.parse(saved);
-    return ACHIEVEMENTS_DATA.map(a => ({ ...a, progress: 0 }));
+    const base = ACHIEVEMENTS_DATA.map(a => ({ ...a, progress: 0 }));
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return base.map(a => {
+        const existing = parsed.find(p => p.id === a.id);
+        return existing ? { ...a, ...existing } : a;
+      });
+    }
+    return base;
   });
 
   const [cooldown, setCooldown] = useState<CooldownState>(() => {
@@ -144,7 +151,16 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
           if (dbState.holdings) setHoldings(dbState.holdings);
           if (dbState.pending_trades) setPendingTrades(dbState.pending_trades);
         }
-        if (dbAch.length > 0) setAchievements(p => p.map(a => { const d = dbAch.find(x => x.id === a.id); return d ? { ...a, progress: d.progress, unlockedAt: d.unlocked_at || undefined } : a; }));
+        if (dbAch.length > 0) setAchievements(prev => {
+          const base = ACHIEVEMENTS_DATA.map(a => ({ ...a, progress: 0 }));
+          return base.map(a => {
+            const db = dbAch.find(x => x.id === a.id);
+            const local = prev.find(x => x.id === a.id);
+            if (db) return { ...a, progress: db.progress, unlockedAt: db.unlocked_at || undefined };
+            if (local) return { ...a, ...local };
+            return a;
+          });
+        });
       } catch (e) { console.error('Supabase load error:', e); }
       setDataLoaded(true);
     };
