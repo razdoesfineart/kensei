@@ -172,7 +172,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, updateSettings, onClearDa
       </div>
 
       <div className="text-center py-10">
-        <p className="font-black text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-gray-500">Ã¥ÂÂ£Ã¨ÂÂ Kensei v4.4</p>
+        <p className="font-black text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-gray-500">剣聖 Kensei v4.4</p>
         <p className="text-[10px] font-bold mt-1 text-gray-400 dark:text-gray-600">Way of the Blade</p>
       </div>
     </div>

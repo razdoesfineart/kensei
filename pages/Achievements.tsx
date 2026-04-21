@@ -19,7 +19,7 @@ const Achievements: React.FC<AchievementsProps> = ({ achievements }) => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-black dark:text-white">
-            Achievements <span className="text-yellow-500">Ã¥ÂÂ²Ã§Â«Â </span>
+            Achievements <span className="text-yellow-500">勲章</span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 font-medium">Unlock badges by mastering the way of the samurai.</p>
         </div>
