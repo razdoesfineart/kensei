@@ -15,16 +15,44 @@ const Petal = ({ delay, left, size, duration }) => (
   />
 );
 
-// Samurai silhouette SVG
+// Samurai silhouette SVG - detailed warrior with katana
 const SamuraiSilhouette = () => (
-  <div style={{ position: 'absolute', bottom: '0', right: '0', opacity: 0.04, pointerEvents: 'none', zIndex: 0 }}>
-    <svg width="400" height="500" viewBox="0 0 400 500" fill="white">
-      <path d="M200 50 L210 45 L215 30 L220 15 L218 10 L225 5 L230 0 L228 8 L222 20 L220 35 L225 40 L220 50 L215 55 Z" />
-      <circle cx="200" cy="80" r="25" />
-      <path d="M175 105 L225 105 L240 130 L250 200 L245 280 L235 350 L240 420 L235 480 L220 480 L215 400 L210 350 L200 300 L190 350 L185 400 L180 480 L165 480 L170 420 L165 350 L155 280 L150 200 L160 130 Z" />
-      <path d="M160 130 L120 200 L115 250 L130 240 L150 200 Z" />
-      <path d="M240 130 L280 200 L285 250 L270 240 L250 200 Z" />
-      <path d="M280 195 L350 140 L380 130 L370 135 L355 145 L285 200 Z" />
+  <div style={{ position: 'absolute', bottom: '0', right: '-20px', opacity: 0.08, pointerEvents: 'none', zIndex: 0 }}>
+    <svg width="500" height="700" viewBox="0 0 500 700" fill="white">
+      {/* Katana blade extending upward */}
+      <path d="M320 10 L322 8 L324 150 L326 280 L324 285 L322 150 L320 10 Z" opacity="0.9"/>
+      <line x1="323" y1="10" x2="323" y2="280" stroke="white" strokeWidth="0.5" opacity="0.4"/>
+      {/* Katana handle/tsuba */}
+      <rect x="314" y="280" width="18" height="6" rx="1" opacity="0.8"/>
+      <rect x="316" y="286" width="14" height="40" rx="2" opacity="0.7"/>
+      <line x1="323" y1="290" x2="323" y2="322" stroke="rgba(0,0,0,0.3)" strokeWidth="2"/>
+      {/* Head with topknot */}
+      <ellipse cx="280" cy="340" rx="28" ry="32" />
+      <path d="M268 315 Q280 295 292 315" />
+      <path d="M280 308 Q290 290 300 295 L305 300" strokeWidth="2"/>
+      {/* Neck */}
+      <rect x="272" y="370" width="16" height="15" rx="3"/>
+      {/* Torso - kimono shape */}
+      <path d="M240 385 L320 385 L330 395 L340 500 L335 520 L325 530 L235 530 L225 520 L220 500 L230 395 Z"/>
+      {/* Kimono V-neck fold */}
+      <path d="M260 385 L280 430 L300 385" fill="rgba(0,0,0,0.15)"/>
+      {/* Obi (belt) */}
+      <rect x="228" y="470" width="104" height="20" rx="3" opacity="0.85"/>
+      {/* Right arm holding katana up */}
+      <path d="M320 395 L340 400 L350 380 L345 340 L335 320 L325 310 L320 315 L330 330 L338 360 L330 390 Z"/>
+      {/* Left arm at side */}
+      <path d="M240 395 L220 410 L210 450 L205 490 L210 495 L218 460 L228 420 L240 405 Z"/>
+      {/* Left hand */}
+      <ellipse cx="207" cy="493" rx="8" ry="6"/>
+      {/* Hakama (pants) */}
+      <path d="M235 530 L230 580 L220 650 L215 690 L240 690 L250 640 L280 640 L290 690 L315 690 L310 650 L300 580 L325 530 Z"/>
+      {/* Hakama center fold */}
+      <line x1="280" y1="530" x2="280" y2="640" stroke="rgba(0,0,0,0.15)" strokeWidth="2"/>
+      {/* Feet */}
+      <ellipse cx="228" cy="692" rx="18" ry="6"/>
+      <ellipse cx="302" cy="692" rx="18" ry="6"/>
+      {/* Kimono back details */}
+      <circle cx="280" cy="440" r="15" fill="rgba(0,0,0,0.08)" />
     </svg>
   </div>
 );
