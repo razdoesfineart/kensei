@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Trade, Emotion } from '../types';
 import AnimeCard from '../components/AnimeCard';
-import { CheckCircle2, Circle, AlertTriangle, Send, TrendingUp, TrendingDown } from 'lucide-react';
+import { CheckCircle2, Circle, Send, TrendingUp, TrendingDown } from 'lucide-react';
 import { calculatePnL, formatCurrency, formatPercent } from '../utils';
 
 const EMOTIONS: Emotion[] = [
