@@ -418,10 +418,10 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
       setTrackedWallet(prev => prev ? { ...prev, tradesCount: prev.tradesCount + 1 } : null);
     }
 
-    const newAchievements = checkNewAchievements(achievements, [...trades, newTrade], streak);
-    if (newAchievements.length > 0) {
-      newAchievements.forEach(a => showAchievement(a.name, a.description, a.icon));
-      setAchievements(newAchievements);
+    const { updated: updatedAch, newlyUnlocked } = checkNewAchievements(achievements, [...trades, newTrade], streak);
+    if (newlyUnlocked.length > 0) {
+      newlyUnlocked.forEach(a => showAchievement(a.name, a.description, a.icon, a.tier, a.kanji));
+      setAchievements(updatedAch);
     }
 
     if (settings.soundEnabled) playTradeLoggedSound();
@@ -496,10 +496,10 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
       setConsecutiveLosses(0);
     }
 
-    const newAchievements = checkNewAchievements(achievements, newTrades, streak);
-    if (newAchievements.length > 0) {
-      newAchievements.forEach(a => showAchievement(a.name, a.description, a.icon));
-      setAchievements(newAchievements);
+    const { updated: updatedAch, newlyUnlocked } = checkNewAchievements(achievements, newTrades, streak);
+    if (newlyUnlocked.length > 0) {
+      newlyUnlocked.forEach(a => showAchievement(a.name, a.description, a.icon, a.tier, a.kanji));
+      setAchievements(updatedAch);
     }
   }, [trades, consecutiveLosses, settings, achievements, streak, showAchievement, showWarning]);
 
