@@ -134,11 +134,10 @@ const Journal: React.FC<JournalProps> = ({ onSaveTrade, setView, isCooldownActiv
             />
           </div>
           {!Object.values(checklist).every(v => v) && (
-            <div className="p-4 bg-orange-50 dark:bg-orange-950/20 border-2 border-orange-200 dark:border-orange-800 rounded-2xl flex items-center gap-4 mb-8">
-              <AlertTriangle className="text-orange-500 shrink-0" />
-              <p className="text-xs font-bold text-orange-700 dark:text-orange-300 uppercase">Warning: A true samurai maintains perfect discipline in all strikes.</p>
-            </div>
-          )}
+          <div className="p-4 bg-gray-100 dark:bg-gray-800/40 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl mb-8">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center italic">A true samurai maintains perfect discipline in all strikes.</p>
+          </div>
+        )}
           <button 
             onClick={() => setStep(2)}
             className="w-full bg-black text-white py-4 rounded-2xl font-black uppercase tracking-widest anime-border-sm hover:-translate-y-1 transition-transform"
