@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { signUp, signIn, resetPassword } from '../db';
+import { playSwordSlashSound } from '../sounds';
 import { Eye, EyeOff, Mail, Lock, Wallet, ArrowRight, Loader2 } from 'lucide-react';
 
 // Cherry blossom petal component
@@ -88,6 +89,7 @@ const Landing = ({ onAuthSuccess }) => {
       } else if (mode === 'login') {
         await signIn(email, password);
         setShowSlash(true);
+        playSwordSlashSound();
         setTimeout(() => onAuthSuccess(), 1400);
         return;
       } else {
@@ -109,6 +111,7 @@ const Landing = ({ onAuthSuccess }) => {
       const we = addr.slice(0, 8) + '@wallet.kensei';
       try { await signIn(we, addr); } catch { await signUp(we, addr); await signIn(we, addr); }
       setShowSlash(true);
+      playSwordSlashSound();
       setTimeout(() => onAuthSuccess(), 1400);
     } catch (err) { setError(err.message || 'Wallet connection failed'); setLoading(false); }
   };

@@ -23,7 +23,7 @@ export const ACHIEVEMENTS_DATA: Omit<Achievement, 'unlockedAt' | 'progress'>[] =
   // Legendary Tier
   { id: 'void_sovereign', name: 'Void Sovereign', description: 'Evolve your guardian to max level', icon: '\uD83D\uDC09', kanji: '\u9F8D', requirement: 'Level 5 Guardian', maxProgress: 30, tier: 'legendary' },
   { id: 'perfect_month', name: 'Perfect Month', description: '70%+ win rate with 50+ trades in a month', icon: '\u2728', kanji: '\u5B8C', requirement: '70% win rate, 50 trades', maxProgress: 100, tier: 'legendary' },
-  { id: 'samurai_legend', name: 'Samurai Legend', description: 'Unlock all other achievements', icon: '\uD83C\uDFEF', kanji: '\u4F1D', requirement: 'All achievements', maxProgress: 15, tier: 'legendary' },
+  { id: 'samurai_legend', name: 'Samurai Legend', description: 'Unlock all other achievements', icon: '\uD83C\uDFEF', kanji: '\u4F1D', requirement: 'All achievements', maxProgress: 16, tier: 'legendary' },
 
   // Mythical Tier
   { id: 'kensei', name: 'Kensei', description: '90%+ win rate with 100+ trades in a month \u2014 the way of the blade master', icon: '\u26E9\uFE0F', kanji: '\u5263\u8056', requirement: '90% win rate, 100 trades/month', maxProgress: 100, tier: 'mythical' },
@@ -121,7 +121,7 @@ export function checkNewAchievements(
   if (legendIndex !== -1) {
     const unlockedCount = updated.filter(a => a.id !== 'samurai_legend' && a.unlockedAt).length;
     updated[legendIndex].progress = unlockedCount;
-    if (unlockedCount >= 15 && !updated[legendIndex].unlockedAt) {
+    if (unlockedCount >= 16 && !updated[legendIndex].unlockedAt) {
       updated[legendIndex].unlockedAt = new Date().toISOString();
       newlyUnlocked.push(updated[legendIndex]);
     }

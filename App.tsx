@@ -14,6 +14,7 @@ import RealityCheckModal from './components/RealityCheckModal';
 import TradeAlertModal from './components/TradeAlertModal';
 import { ACHIEVEMENTS_DATA, checkNewAchievements } from './achievements';
 import { pollNewTransactions, fetchWalletHoldings, formatWalletAddress } from './helius';
+import { playAchievementSound, playTradeDetectedSound, playTradeLoggedSound, playCooldownSound, playCooldownEndSound, playErrorSound } from './sounds';
 import { fetchTrades, saveTrade, fetchUserState, saveUserState, fetchAchievements, saveAchievements, clearAllUserData, signOut } from './db';
 
 // Debug helper - logs with timestamp
@@ -45,6 +46,20 @@ const COOLDOWN_PENALTIES = [2, 5, 10, 20, 60];
 
 const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmail }) => {
   const [dataLoaded, setDataLoaded] = useState(false);
+
+  // Apply dark mode immediately on mount to prevent flash of light mode
+  useEffect(() => {
+    const saved = localStorage.getItem('settings');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.isDarkMode) {
+          document.body.classList.add('dark', 'bg-[#0f0f12]', 'text-[#F5F5F5]');
+          document.body.classList.remove('bg-[#F8F8F8]', 'text-[#2D2D2D]');
+        }
+      } catch {}
+    }
+  }, []);
   const [currentView, setCurrentView] = useState<View>(View.HOME);
   
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -190,7 +205,37 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
     return () => clearTimeout(t);
   }, [achievements, userId, dataLoaded]);
 
-  const handleLogout = async () => { try { await signOut(); window.location.reload(); } catch (e) { console.error(e); } };
+  // Streak auto-increment: if user logged trades today, increment streak daily
+  useEffect(() => {
+    if (!dataLoaded) return;
+    const today = new Date().toDateString();
+    const lastStreakDate = localStorage.getItem('lastStreakDate');
+    if (lastStreakDate === today) return; // Already incremented today
+
+    const todayTrades = trades.filter(t => new Date(t.timestamp).toDateString() === today);
+    if (todayTrades.length > 0) {
+      // User has trades today - increment streak
+      setStreak(prev => prev + 1);
+      localStorage.setItem('lastStreakDate', today);
+    } else {
+      // Check if yesterday had trades - if not, reset streak
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toDateString();
+      const yesterdayTrades = trades.filter(t => new Date(t.timestamp).toDateString() === yesterdayStr);
+      if (yesterdayTrades.length === 0 && lastStreakDate && lastStreakDate !== yesterdayStr) {
+        // Missed a day - reset streak
+        setStreak(0);
+      }
+    }
+  }, [trades, dataLoaded]);
+
+  const handleLogout = async () => {
+    try { await signOut(); } catch (e) { console.error('signOut error:', e); }
+    // Always clear local state and redirect regardless of signOut success
+    localStorage.clear();
+    window.location.href = window.location.origin;
+  };
 
   // Save to localStorage
   useEffect(() => { localStorage.setItem('trades', JSON.stringify(trades)); }, [trades]);
@@ -240,6 +285,7 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
 
     dbg('Adding new pending trade:', trade.tokenSymbol);
     setPendingTrades(prev => [...prev, newPendingTrade]);
+    try { const s = JSON.parse(localStorage.getItem('settings') || '{}'); if (s.soundEnabled) playTradeDetectedSound(); } catch {}
     showWarning(`${trade.type} Detected!`, `${trade.type === 'BUY' ? 'Bought' : 'Sold'} ${trade.amount.toFixed(4)} ${trade.tokenSymbol} - Log now!`);
     setCurrentView(View.TRACKER);
   }, [showWarning]);
@@ -378,6 +424,7 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
       setAchievements(newAchievements);
     }
 
+    if (settings.soundEnabled) playTradeLoggedSound();
     showSuccess('Trade Logged!', `${pending.trade.type} ${pending.trade.tokenSymbol} recorded with discipline`);
   };
 
@@ -428,6 +475,7 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
       reason: `Missed trade log (${missedCount} offense${missedCount > 1 ? 's' : ''})`
     });
 
+    if (settings.soundEnabled) playErrorSound();
     showWarning('Log Missed!', `${penaltyMinutes} minute cooldown activated`);
   };
 
@@ -441,6 +489,7 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
       if (settings.meditationCooldownEnabled && newConsecutive >= settings.consecutiveLossLimit) {
         const cooldownEnd = new Date(Date.now() + settings.cooldownDuration * 60 * 1000);
         setCooldown({ isActive: true, endsAt: cooldownEnd.toISOString(), reason: `${newConsecutive} consecutive losses` });
+        if (settings.soundEnabled) playCooldownSound();
         showWarning('Cooldown Activated', `Take ${settings.cooldownDuration} minutes to reflect.`);
       }
     } else {
@@ -460,6 +509,7 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
 
   const handleCooldownEnd = () => {
     setCooldown({ isActive: false, endsAt: null, reason: '' });
+    if (settings.soundEnabled) playCooldownEndSound();
     showSuccess('Cooldown Complete', 'You may resume trading. Stay disciplined!');
   };
 
