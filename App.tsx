@@ -546,7 +546,7 @@ const App: React.FC<{ userId: string; userEmail: string }> = ({ userId, userEmai
       case View.TRACKER: return <Tracker trackedWallet={trackedWallet} holdings={holdings} trades={trades} isTracking={isTracking} lastPolled={lastPolledTime} onStartTracking={handleStartTracking} onStopTracking={handleStopTracking} onRefresh={handleRefreshHoldings} />;
       case View.JOURNAL: return <Journal onSaveTrade={addTrade} setView={setCurrentView} isCooldownActive={cooldown.isActive} />;
       case View.STATS: return <Stats trades={trades} />;
-      case View.GUARDIAN: return <Guardian streak={streak} />;
+      case View.GUARDIAN: return <Guardian streak={streak} achievements={achievements} />;
       case View.ACHIEVEMENTS: return <Achievements achievements={achievements} />;
       case View.SETTINGS: return <Settings settings={settings} updateSettings={updateSettings} onClearData={handleClearData} trades={trades} />;
       default: return <Home trades={trades} streak={streak} setView={setCurrentView} />;
