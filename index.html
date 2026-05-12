@@ -30,23 +30,7 @@
         .anime-border-purple {
             box-shadow: 6px 6px 0px 0px #a855f7;
         }
-        
-        /* Cherry Blossom Petal Animation */
-        .petal {
-            position: fixed;
-            background-color: #ffb7c5;
-            border-radius: 150% 0 150% 0;
-            opacity: 0.3;
-            pointer-events: none;
-            z-index: 1;
-            animation: fall linear infinite;
-        }
-        @keyframes fall {
-            0% { transform: translate(0, -10%) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            100% { transform: translate(100px, 110vh) rotate(360deg); opacity: 0; }
-        }
+
 
         /* Spirit Dragon Glow */
         .spirit-glow {
@@ -128,20 +112,7 @@
 </head>
 <body class="bg-[#F8F8F8] text-[#2D2D2D] transition-colors duration-300">
     <div id="root"></div>
-    <!-- Petal Generator script -->
-    <script>
-        function createPetal() {
-            const petal = document.createElement('div');
-            petal.className = 'petal';
-            petal.style.left = Math.random() * 100 + 'vw';
-            petal.style.width = Math.random() * 10 + 5 + 'px';
-            petal.style.height = petal.style.width;
-            petal.style.animationDuration = Math.random() * 5 + 5 + 's';
-            document.body.appendChild(petal);
-            setTimeout(() => petal.remove(), 10000);
-        }
-        setInterval(createPetal, 500);
-    </script>
+
 <script type="module" src="/index.tsx"></script>
 </body>
 </html>
