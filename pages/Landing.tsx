@@ -61,11 +61,19 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSlash, setShowSlash] = useState(false);
+  const [clickInfo, setClickInfo] = useState<string | null>(null);
 
   const emailRef = useRef<HTMLInputElement>(null);
   const { ref: wrapRef, bounds } = useImageBounds();
 
   useEffect(() => { setTimeout(() => emailRef.current?.focus(), 200); }, []);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (bounds.width === 0) return;
+    const xPct = ((e.clientX - bounds.left) / bounds.width * 100).toFixed(2);
+    const yPct = ((e.clientY - bounds.top)  / bounds.height * 100).toFixed(2);
+    setClickInfo('X: ' + xPct + '%   Y: ' + yPct + '%');
+  };
 
 const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -114,7 +122,7 @@ const handleSubmit = async (e?: React.FormEvent) => {
   });
 
   return (
-    <div ref={wrapRef} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
+    <div ref={wrapRef} onClick={handleClick} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500&display=swap');
         @keyframes slashFade { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
@@ -127,6 +135,11 @@ const handleSubmit = async (e?: React.FormEvent) => {
       <img src="/kensei-login-bg.png" alt="" draggable={false}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', userSelect: 'none', pointerEvents: 'none', zIndex: 1 }} />
 
+      {clickInfo && (
+        <div style={{ position: 'fixed', top: 10, left: 10, background: 'rgba(0,0,0,0.85)', color: '#fff', padding: '8px 14px', borderRadius: 6, fontFamily: 'monospace', fontSize: 14, zIndex: 999, pointerEvents: 'none' }}>
+          {clickInfo}
+        </div>
+      )}
       <Snowflakes />
       <SwordSlash active={showSlash} />
 
