@@ -5,70 +5,35 @@ import { playSwordSlashSound } from '../sounds';
 const IMG_W = 2912;
 const IMG_H = 1462;
 
-// Pixel coordinates measured directly from user feedback
-// USERNAME: screenshot 17-35% → full image y=460-608
-// PASSWORD: screenshot 38-55% → full image y=632-771
-// ENTER:    screenshot 65-85% → full image y=853-1017
-// Horizontal: panel x=1095-1820 (centred)
-const ZONES = {
-  username: { x: 1095, y: 460, w: 725, h: 148 },
-  password: { x: 1095, y: 632, w: 725, h: 139 },
-  enter:    { x: 1095, y: 853, w: 725, h: 164 },
-};
-
 function useImageBounds() {
   const [bounds, setBounds] = useState({ left: 0, top: 0, width: 0, height: 0 });
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     function calc() {
       if (!ref.current) return;
       const vw = ref.current.clientWidth;
       const vh = ref.current.clientHeight;
       const imgAR = IMG_W / IMG_H;
-      const vpAR  = vw / vh;
+      const vpAR = vw / vh;
       let rw: number, rh: number;
       if (vpAR > imgAR) { rw = vw; rh = vw / imgAR; }
-      else               { rh = vh; rw = vh * imgAR; }
+      else { rh = vh; rw = vh * imgAR; }
       setBounds({ left: (vw - rw) / 2, top: (vh - rh) / 2, width: rw, height: rh });
     }
     calc();
     window.addEventListener('resize', calc);
     return () => window.removeEventListener('resize', calc);
   }, []);
-
   return { ref, bounds };
 }
 
-function zone(name: keyof typeof ZONES, b: { left: number; top: number; width: number; height: number }) {
-  const z = ZONES[name];
-  const sx = b.width  / IMG_W;
-  const sy = b.height / IMG_H;
-  return {
-    position: 'absolute' as const,
-    left:   b.left + z.x * sx,
-    top:    b.top  + z.y * sy,
-    width:  z.w * sx,
-    height: z.h * sy,
-  };
-}
-
-const SwordSlash = ({ active }: { active: boolean }) => {
-  if (!active) return null;
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 100, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, rgba(225,29,72,0.3) 0%, rgba(0,0,0,0.8) 70%)', animation: 'slashFade 1.2s ease-out forwards' }} />
-      <div style={{ position: 'absolute', fontSize: '4rem', fontWeight: 900, color: 'white', textShadow: '0 0 40px rgba(225,29,72,0.8)', animation: 'slashText 0.8s 0.4s ease-out forwards', opacity: 0 }}>剣聖</div>
-    </div>
-  );
-};
-
 const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
-  const [email, setEmail]       = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError]       = useState('');
-  const [loading, setLoading]   = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showSlash, setShowSlash] = useState(false);
+  const [clickY, setClickY] = useState<number | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const { ref: wrapRef, bounds } = useImageBounds();
 
@@ -89,6 +54,15 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     }
   };
 
+  // DEBUG: track clicks to show where user is clicking
+  const handleClick = (e: React.MouseEvent) => {
+    if (bounds.height === 0) return;
+    const imgY = (e.clientY - bounds.top) / bounds.height;
+    const imgX = (e.clientX - bounds.left) / bounds.width;
+    setClickY(Math.round(imgY * 10000) / 100);
+    console.log(`Click: imgX=${(imgX*100).toFixed(1)}% imgY=${(imgY*100).toFixed(1)}%  fullImgPx: x=${Math.round(imgX*IMG_W)} y=${Math.round(imgY*IMG_H)}`);
+  };
+
   const inputStyle: React.CSSProperties = {
     width: '100%', height: '100%',
     background: 'transparent',
@@ -104,77 +78,69 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     boxSizing: 'border-box' as const,
   };
 
+  // These are placeholders — user will click the real boxes and we read the %
+  const USERNAME_TOP_PCT = 0.295;
+  const USERNAME_H_PCT   = 0.075;
+  const PASSWORD_TOP_PCT = 0.415;
+  const PASSWORD_H_PCT   = 0.075;
+  const ENTER_TOP_PCT    = 0.555;
+  const ENTER_H_PCT      = 0.095;
+  const BOX_LEFT_PCT     = 0.376;
+  const BOX_W_PCT        = 0.249;
+
+  const box = (topPct: number, hPct: number) => ({
+    position: 'absolute' as const,
+    left:   bounds.left + BOX_LEFT_PCT * bounds.width,
+    top:    bounds.top  + topPct * bounds.height,
+    width:  BOX_W_PCT * bounds.width,
+    height: hPct * bounds.height,
+  });
+
   return (
-    <div ref={wrapRef} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
+    <div ref={wrapRef} onClick={handleClick} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
       <style>{`
-        @keyframes slashFade { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
-        @keyframes slashText { 0%{opacity:0;transform:scale(2)} 50%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(0.8)} }
         @keyframes spin { to { transform:rotate(360deg) } }
         input:-webkit-autofill { -webkit-box-shadow:0 0 0 100px transparent inset!important; -webkit-text-fill-color:#1c2b3a!important; }
       `}</style>
 
-      <img
-        src="/kensei-login-bg.png"
-        alt=""
-        draggable={false}
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', userSelect: 'none', pointerEvents: 'none' }}
-      />
+      <img src="/kensei-login-bg.png" alt="" draggable={false}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', userSelect: 'none', pointerEvents: 'none' }} />
 
-      <SwordSlash active={showSlash} />
+      {/* DEBUG: show click position */}
+      {clickY !== null && (
+        <div style={{ position: 'fixed', top: 10, left: 10, background: 'rgba(0,0,0,0.85)', color: '#fff', padding: '8px 14px', borderRadius: 6, fontFamily: 'monospace', fontSize: 14, zIndex: 999, pointerEvents: 'none' }}>
+          Last click: <b>{clickY}%</b> from image top
+        </div>
+      )}
 
       {bounds.width > 0 && (
         <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
 
-          {/* USERNAME */}
-          <div style={{ ...zone('username', bounds), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <input
-              ref={emailRef}
-              type="email"
-              value={email}
-              onChange={e => { setEmail(e.target.value); setError(''); }}
-              autoComplete="email"
-              spellCheck={false}
-              style={inputStyle}
-            />
+          {/* USERNAME — red outline for debug */}
+          <div style={{ ...box(USERNAME_TOP_PCT, USERNAME_H_PCT), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', outline: '2px solid red' }}>
+            <input ref={emailRef} type="email" value={email} onChange={e => { setEmail(e.target.value); setError(''); }}
+              autoComplete="email" spellCheck={false} style={inputStyle} />
           </div>
 
-          {/* PASSWORD */}
-          <div style={{ ...zone('password', bounds), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <input
-              type="password"
-              value={password}
-              onChange={e => { setPassword(e.target.value); setError(''); }}
-              autoComplete="current-password"
-              style={inputStyle}
-            />
+          {/* PASSWORD — blue outline for debug */}
+          <div style={{ ...box(PASSWORD_TOP_PCT, PASSWORD_H_PCT), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', outline: '2px solid blue' }}>
+            <input type="password" value={password} onChange={e => { setPassword(e.target.value); setError(''); }}
+              autoComplete="current-password" style={inputStyle} />
           </div>
 
-          {/* ENTER */}
-          <div style={{ ...zone('enter', bounds), pointerEvents: 'auto' }}>
+          {/* ENTER — green outline for debug */}
+          <div style={{ ...box(ENTER_TOP_PCT, ENTER_H_PCT), pointerEvents: 'auto' }}>
             <button type="submit" disabled={loading}
-              style={{ width: '100%', height: '100%', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
-              {loading && (
-                <div style={{ width: 22, height: 22, margin: '0 auto', border: '2px solid rgba(200,160,60,0.35)', borderTopColor: '#c8a028', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-              )}
+              style={{ width: '100%', height: '100%', background: 'transparent', border: '2px solid green', cursor: 'pointer', padding: 0 }}>
+              {loading && <div style={{ width: 22, height: 22, margin: '0 auto', border: '2px solid rgba(200,160,60,0.35)', borderTopColor: '#c8a028', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
             </button>
           </div>
 
-          {/* Error */}
           {error && (
-            <div style={{
-              position: 'absolute',
-              left: zone('enter', bounds).left,
-              top:  zone('enter', bounds).top + zone('enter', bounds).height + 6,
-              width: zone('enter', bounds).width,
-              textAlign: 'center',
-              fontFamily: 'Georgia, serif',
-              fontSize: 'clamp(9px, 0.9vw, 13px)',
-              color: '#c0392b',
-              textShadow: '0 0 8px rgba(192,57,43,0.7)',
-              pointerEvents: 'none',
-            }}>{error}</div>
+            <div style={{ ...box(ENTER_TOP_PCT + ENTER_H_PCT + 0.01, 0.05), display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c0392b', fontFamily: 'Georgia', fontSize: 13, pointerEvents: 'none' }}>
+              {error}
+            </div>
           )}
-
         </form>
       )}
     </div>
