@@ -68,13 +68,14 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     background: 'transparent',
     border: 'none', outline: 'none',
     color: '#0a1520',
-    fontFamily: 'Cinzel, Georgia, serif',
-    fontSize: 'clamp(13px, 1.5vw, 18px)',
-    fontWeight: 700,
-    letterSpacing: '0.14em',
-    textAlign: 'center',
+    fontFamily: "'Orbitron', sans-serif",
+    fontSize: 'clamp(10px, 1.1vw, 13px)',
+    fontWeight: 500,
+    letterSpacing: '0.08em',
+    textAlign: 'left',
     caretColor: '#0a1520',
-    padding: 0,
+    paddingLeft: '8%',
+    paddingRight: '4%',
     position: 'relative',
     zIndex: 10,
     boxSizing: 'border-box' as const,
@@ -98,6 +99,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   return (
     <div ref={wrapRef} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
         @keyframes slashFade { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
         @keyframes slashText { 0%{opacity:0;transform:scale(2)} 50%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(0.8)} }
         @keyframes spin { to { transform:rotate(360deg) } }
