@@ -61,20 +61,13 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSlash, setShowSlash] = useState(false);
-  const [clickInfo, setClickInfo] = useState<string | null>(null);
+
   const emailRef = useRef<HTMLInputElement>(null);
   const { ref: wrapRef, bounds } = useImageBounds();
 
   useEffect(() => { setTimeout(() => emailRef.current?.focus(), 200); }, []);
 
-  const handleClick = (e: React.MouseEvent) => {
-    if (bounds.width === 0) return;
-    const xPct = ((e.clientX - bounds.left) / bounds.width * 100).toFixed(2);
-    const yPct = ((e.clientY - bounds.top)  / bounds.height * 100).toFixed(2);
-    setClickInfo('X: ' + xPct + '%   Y: ' + yPct + '%');
-  };
-
-  const handleSubmit = async (e?: React.FormEvent) => {
+const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!email.trim() || !password) return;
     setError(''); setLoading(true);
@@ -108,7 +101,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   };
 
   const BOX_LEFT = 0.376;
-  const BOX_W    = 0.249;
+  const BOX_W    = 0.2178;
 
   const box = (centerPct: number, halfH: number) => ({
     position: 'absolute' as const,
@@ -120,7 +113,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   });
 
   return (
-    <div ref={wrapRef} onClick={handleClick} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
+    <div ref={wrapRef} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500&display=swap');
         @keyframes slashFade { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
@@ -136,25 +129,18 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
       <Snowflakes />
       <SwordSlash active={showSlash} />
 
-      {/* DEBUG: click coords */}
-      {clickInfo && (
-        <div style={{ position: 'fixed', top: 10, left: 10, background: 'rgba(0,0,0,0.85)', color: '#fff', padding: '8px 14px', borderRadius: 6, fontFamily: 'monospace', fontSize: 14, zIndex: 999, pointerEvents: 'none' }}>
-          {clickInfo}
-        </div>
-      )}
-
       {bounds.width > 0 && (
         <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
 
           {/* USERNAME — red outline debug */}
-          <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', outline: '2px solid red' }}>
+          <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center' }}>
             <input ref={emailRef} type="text" value={email}
               onChange={e => { setEmail(e.target.value); setError(''); }}
               autoComplete="off" spellCheck={false} style={inputStyle} />
           </div>
 
           {/* PASSWORD — blue outline debug */}
-          <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', outline: '2px solid blue' }}>
+          <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center' }}>
             <input type="password" value={password}
               onChange={e => { setPassword(e.target.value); setError(''); }}
               autoComplete="current-password" style={inputStyle} />
@@ -163,7 +149,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           {/* ENTER — green outline debug */}
           <div style={{ ...box(0.6831, 0.05), pointerEvents: 'auto' }}>
             <button type="submit" disabled={loading}
-              style={{ width: '100%', height: '100%', background: 'transparent', border: '2px solid green', cursor: 'pointer', padding: 0 }}>
+              style={{ width: '100%', height: '100%', background: 'transparent', cursor: 'pointer', padding: 0 }}>
               {loading && <div style={{ width: 22, height: 22, margin: '0 auto', border: '2px solid rgba(200,160,60,0.35)', borderTopColor: '#c8a028', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
             </button>
           </div>
