@@ -95,7 +95,7 @@ const handleSubmit = async (e?: React.FormEvent) => {
     background: 'transparent',
     border: 'none', outline: 'none',
     color: '#0a1520',
-    fontFamily: "'Shippori Mincho', serif",
+    fontFamily: "'Exo 2', sans-serif",
     fontSize: 'clamp(15px, 1.8vw, 22px)',
     fontWeight: 500,
     letterSpacing: '0.06em',
@@ -124,7 +124,7 @@ const handleSubmit = async (e?: React.FormEvent) => {
   return (
     <div ref={wrapRef} onClick={handleClick} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600&display=swap');
         @keyframes slashFade { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
         @keyframes slashText { 0%{opacity:0;transform:scale(2)} 50%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(0.8)} }
         @keyframes spin { to { transform:rotate(360deg) } }
@@ -166,6 +166,60 @@ const handleSubmit = async (e?: React.FormEvent) => {
               style={{ width: '100%', height: '100%', background: 'transparent', cursor: 'pointer', padding: 0 }}>
               {loading && <div style={{ width: 22, height: 22, margin: '0 auto', border: '2px solid rgba(200,160,60,0.35)', borderTopColor: '#c8a028', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
             </button>
+          </div>
+
+          {/* Forgot Password + Sign Up — gold, side by side, below ENTER */}
+          <div style={{
+            position: 'absolute',
+            left: bounds.left + BOX_LEFT * bounds.width,
+            top: bounds.top + (0.6831 + 0.05 + 0.03) * bounds.height,
+            width: BOX_W * bounds.width,
+            display: 'flex',
+            gap: '8px',
+            justifyContent: 'center',
+            zIndex: 20,
+            pointerEvents: 'auto',
+          }}>
+            <button
+              type="button"
+              onClick={() => alert('Forgot password coming soon!')}
+              style={{
+                flex: 1,
+                background: 'linear-gradient(135deg, #c9a84c, #f5d17a, #c9a84c)',
+                border: '1px solid #a07830',
+                borderRadius: 4,
+                color: '#3a2000',
+                fontFamily: "'Exo 2', sans-serif",
+                fontSize: 'clamp(9px, 0.9vw, 12px)',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                padding: '6px 4px',
+                cursor: 'pointer',
+                textShadow: '0 1px 0 rgba(255,255,255,0.3)',
+                boxShadow: '0 2px 8px rgba(180,130,0,0.5)',
+                whiteSpace: 'nowrap',
+              }}
+            >FORGOT PASSWORD</button>
+            <button
+              type="button"
+              onClick={() => alert('Sign up coming soon!')}
+              style={{
+                flex: 1,
+                background: 'linear-gradient(135deg, #c9a84c, #f5d17a, #c9a84c)',
+                border: '1px solid #a07830',
+                borderRadius: 4,
+                color: '#3a2000',
+                fontFamily: "'Exo 2', sans-serif",
+                fontSize: 'clamp(9px, 0.9vw, 12px)',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                padding: '6px 4px',
+                cursor: 'pointer',
+                textShadow: '0 1px 0 rgba(255,255,255,0.3)',
+                boxShadow: '0 2px 8px rgba(180,130,0,0.5)',
+                whiteSpace: 'nowrap',
+              }}
+            >SIGN UP</button>
           </div>
 
           {error && (
