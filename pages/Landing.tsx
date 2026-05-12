@@ -75,10 +75,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     textAlign: 'left',
     caretColor: '#0a1520',
     paddingLeft: '45%',
-    paddingRight: '5%',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    paddingRight: '8%',
     position: 'relative',
     zIndex: 10,
     boxSizing: 'border-box' as const,
@@ -118,14 +115,14 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
         <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
 
           {/* USERNAME — center at 49.74% */}
-          <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
             <input ref={emailRef} type="text" value={email}
               onChange={e => { setEmail(e.target.value); setError(''); }}
-              autoComplete="email" spellCheck={false} style={inputStyle} />
+              autoComplete="off" spellCheck={false} style={inputStyle} />
           </div>
 
           {/* PASSWORD — center at 57.62% */}
-          <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
             <input type="password" value={password}
               onChange={e => { setPassword(e.target.value); setError(''); }}
               autoComplete="current-password" style={inputStyle} />
