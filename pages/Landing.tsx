@@ -2,16 +2,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import { signIn } from '../db';
 import { playSwordSlashSound } from '../sounds';
 
-// Image natural dimensions
 const IMG_W = 2912;
 const IMG_H = 1462;
 
-// Pixel coords of each interactive zone in the source image
-// (measured from the Gemini artwork at full resolution)
+// Pixel coordinates measured directly from user feedback
+// USERNAME: screenshot 17-35% → full image y=460-608
+// PASSWORD: screenshot 38-55% → full image y=632-771
+// ENTER:    screenshot 65-85% → full image y=853-1017
+// Horizontal: panel x=1095-1820 (centred)
 const ZONES = {
-  username: { x: 1095, y: 488, w: 725, h: 84 },
-  password: { x: 1095, y: 592, w: 725, h: 80 },
-  enter:    { x: 1095, y: 688, w: 725, h: 110 },
+  username: { x: 1095, y: 460, w: 725, h: 148 },
+  password: { x: 1095, y: 632, w: 725, h: 139 },
+  enter:    { x: 1095, y: 853, w: 725, h: 164 },
 };
 
 function useImageBounds() {
@@ -26,7 +28,6 @@ function useImageBounds() {
       const imgAR = IMG_W / IMG_H;
       const vpAR  = vw / vh;
       let rw: number, rh: number;
-      // objectFit: cover — whichever dimension fills first
       if (vpAR > imgAR) { rw = vw; rh = vw / imgAR; }
       else               { rh = vh; rw = vh * imgAR; }
       setBounds({ left: (vw - rw) / 2, top: (vh - rh) / 2, width: rw, height: rh });
@@ -39,16 +40,16 @@ function useImageBounds() {
   return { ref, bounds };
 }
 
-function zone(name: keyof typeof ZONES, bounds: { left: number; top: number; width: number; height: number }) {
+function zone(name: keyof typeof ZONES, b: { left: number; top: number; width: number; height: number }) {
   const z = ZONES[name];
-  const scaleX = bounds.width  / IMG_W;
-  const scaleY = bounds.height / IMG_H;
+  const sx = b.width  / IMG_W;
+  const sy = b.height / IMG_H;
   return {
     position: 'absolute' as const,
-    left:   bounds.left + z.x * scaleX,
-    top:    bounds.top  + z.y * scaleY,
-    width:  z.w * scaleX,
-    height: z.h * scaleY,
+    left:   b.left + z.x * sx,
+    top:    b.top  + z.y * sy,
+    width:  z.w * sx,
+    height: z.h * sy,
   };
 }
 
@@ -124,7 +125,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
       {bounds.width > 0 && (
         <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
 
-          {/* USERNAME — pixel-perfect overlay */}
+          {/* USERNAME */}
           <div style={{ ...zone('username', bounds), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <input
               ref={emailRef}
@@ -137,7 +138,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
             />
           </div>
 
-          {/* PASSWORD — pixel-perfect overlay */}
+          {/* PASSWORD */}
           <div style={{ ...zone('password', bounds), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <input
               type="password"
@@ -148,15 +149,12 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
             />
           </div>
 
-          {/* ENTER — pixel-perfect overlay */}
+          {/* ENTER */}
           <div style={{ ...zone('enter', bounds), pointerEvents: 'auto' }}>
-            <button
-              type="submit"
-              disabled={loading}
-              style={{ width: '100%', height: '100%', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
-            >
+            <button type="submit" disabled={loading}
+              style={{ width: '100%', height: '100%', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
               {loading && (
-                <div style={{ width: 20, height: 20, margin: '0 auto', border: '2px solid rgba(200,160,60,0.35)', borderTopColor: '#c8a028', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                <div style={{ width: 22, height: 22, margin: '0 auto', border: '2px solid rgba(200,160,60,0.35)', borderTopColor: '#c8a028', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
               )}
             </button>
           </div>
@@ -164,16 +162,16 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           {/* Error */}
           {error && (
             <div style={{
-              ...zone('enter', bounds),
-              top: zone('enter', bounds).top + zone('enter', bounds).height + 8,
-              height: 'auto',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              pointerEvents: 'none',
+              position: 'absolute',
+              left: zone('enter', bounds).left,
+              top:  zone('enter', bounds).top + zone('enter', bounds).height + 6,
+              width: zone('enter', bounds).width,
+              textAlign: 'center',
               fontFamily: 'Georgia, serif',
-              fontSize: 'clamp(9px, 0.9vw, 12px)',
+              fontSize: 'clamp(9px, 0.9vw, 13px)',
               color: '#c0392b',
               textShadow: '0 0 8px rgba(192,57,43,0.7)',
-              whiteSpace: 'nowrap',
+              pointerEvents: 'none',
             }}>{error}</div>
           )}
 
