@@ -27,6 +27,38 @@ function useImageBounds() {
   return { ref, bounds };
 }
 
+const Snowflakes = () => {
+  const flakes = React.useMemo(() => Array.from({ length: 28 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    delay: Math.random() * 12,
+    duration: Math.random() * 7 + 9,
+    size: Math.random() * 10 + 6,
+    opacity: Math.random() * 0.45 + 0.25,
+  })), []);
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 4 }}>
+      {flakes.map(f => (
+        <div
+          key={f.id}
+          style={{
+            position: 'absolute',
+            left: f.left + '%',
+            top: '-30px',
+            fontSize: f.size + 'px',
+            color: 'rgba(200,230,255,' + f.opacity + ')',
+            textShadow: '0 0 6px rgba(180,215,255,0.8)',
+            animation: 'snowfall ' + f.duration + 's linear ' + f.delay + 's infinite',
+          }}
+        >
+          ❄
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const SwordSlash = ({ active }: { active: boolean }) => {
   if (!active) return null;
   return (
@@ -64,13 +96,15 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   };
 
   const inputStyle: React.CSSProperties = {
-    width: '100%', height: '100%',
+    width: '100%',
+    height: '100%',
     background: 'transparent',
-    border: 'none', outline: 'none',
+    border: 'none',
+    outline: 'none',
     color: '#0a1520',
     fontFamily: "'Shippori Mincho', serif",
     fontSize: 'clamp(15px, 1.8vw, 22px)',
-    fontWeight: 400,
+    fontWeight: 500,
     letterSpacing: '0.06em',
     textAlign: 'left',
     caretColor: '#0a1520',
@@ -78,13 +112,9 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     paddingRight: '8%',
     position: 'relative',
     zIndex: 10,
-    boxSizing: 'border-box' as const,
+    boxSizing: 'border-box',
   };
 
-  // Centers confirmed by user clicks:
-  // USERNAME center = 49.74%  → box spans ±4%  = 45.74% to 53.74%
-  // PASSWORD center = 57.62%  → box spans ±4%  = 53.62% to 61.62%
-  // ENTER    center = 68.31%  → box spans ±5%  = 63.31% to 73.31%
   const BOX_LEFT = 0.376;
   const BOX_W    = 0.249;
 
@@ -94,6 +124,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     top:    bounds.top  + (centerPct - halfH) * bounds.height,
     width:  BOX_W * bounds.width,
     height: halfH * 2 * bounds.height,
+    overflow: 'hidden' as const,
   });
 
   return (
@@ -103,32 +134,36 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
         @keyframes slashFade { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
         @keyframes slashText { 0%{opacity:0;transform:scale(2)} 50%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(0.8)} }
         @keyframes spin { to { transform:rotate(360deg) } }
-        input:-webkit-autofill { -webkit-box-shadow:0 0 0 100px transparent inset!important; -webkit-text-fill-color:#1c2b3a!important; }
+        @keyframes snowfall {
+          0%   { transform: translateY(-30px) rotate(0deg); opacity: 0; }
+          10%  { opacity: 1; }
+          90%  { opacity: 0.7; }
+          100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+        input:-webkit-autofill { -webkit-box-shadow:0 0 0 100px transparent inset!important; -webkit-text-fill-color:#0a1520!important; }
       `}</style>
 
       <img src="/kensei-login-bg.png" alt="" draggable={false}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', userSelect: 'none', pointerEvents: 'none', zIndex: 1 }} />
 
+      <Snowflakes />
       <SwordSlash active={showSlash} />
 
       {bounds.width > 0 && (
         <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
 
-          {/* USERNAME — center at 49.74% */}
-          <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+          <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center' }}>
             <input ref={emailRef} type="text" value={email}
               onChange={e => { setEmail(e.target.value); setError(''); }}
               autoComplete="off" spellCheck={false} style={inputStyle} />
           </div>
 
-          {/* PASSWORD — center at 57.62% */}
-          <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+          <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center' }}>
             <input type="password" value={password}
               onChange={e => { setPassword(e.target.value); setError(''); }}
               autoComplete="current-password" style={inputStyle} />
           </div>
 
-          {/* ENTER — center at 68.31% */}
           <div style={{ ...box(0.6831, 0.05), pointerEvents: 'auto' }}>
             <button type="submit" disabled={loading}
               style={{ width: '100%', height: '100%', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
@@ -137,7 +172,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
           </div>
 
           {error && (
-            <div style={{ ...box(0.6831, 0.05), top: bounds.top + 0.745 * bounds.height, height: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c0392b', fontFamily: 'Georgia', fontSize: 13, pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', left: bounds.left + BOX_LEFT * bounds.width, top: bounds.top + 0.745 * bounds.height, width: BOX_W * bounds.width, textAlign: 'center', color: '#c0392b', fontFamily: 'Georgia', fontSize: 13, pointerEvents: 'none' }}>
               {error}
             </div>
           )}
