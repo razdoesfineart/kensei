@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { signIn } from '../db';
+import { signIn, signUp, resetPassword } from '../db';
 import { playSwordSlashSound } from '../sounds';
 
 const IMG_W = 2912;
@@ -55,14 +55,154 @@ const SwordSlash = ({ active }: { active: boolean }) => {
   );
 };
 
+// ── Modal ──────────────────────────────────────────────────────────────────────
+const Modal = ({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) => (
+  <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }} />
+    <div style={{
+      position: 'relative', zIndex: 201,
+      background: 'linear-gradient(160deg, #0d1f35 0%, #071526 100%)',
+      border: '1px solid rgba(197,160,60,0.45)',
+      borderRadius: 10,
+      padding: '36px 40px',
+      width: '100%', maxWidth: 380,
+      boxShadow: '0 0 60px rgba(0,0,0,0.7), 0 0 30px rgba(197,160,60,0.15)',
+    }}>
+      {/* Gold corner accents */}
+      {[{top:0,left:0,borderTop:'2px solid #c9a84c',borderLeft:'2px solid #c9a84c',borderRadius:'6px 0 0 0'},
+        {top:0,right:0,borderTop:'2px solid #c9a84c',borderRight:'2px solid #c9a84c',borderRadius:'0 6px 0 0'},
+        {bottom:0,left:0,borderBottom:'2px solid #c9a84c',borderLeft:'2px solid #c9a84c',borderRadius:'0 0 0 6px'},
+        {bottom:0,right:0,borderBottom:'2px solid #c9a84c',borderRight:'2px solid #c9a84c',borderRadius:'0 0 6px 0'},
+      ].map((s,i) => <div key={i} style={{ position:'absolute', width:16, height:16, ...s }} />)}
+
+      <div style={{ fontFamily:"'Exo 2',sans-serif", fontSize:18, fontWeight:700, letterSpacing:'0.18em', color:'#f5d17a', textAlign:'center', marginBottom:24 }}>
+        {title}
+      </div>
+      {children}
+      <button onClick={onClose} style={{ position:'absolute', top:12, right:14, background:'none', border:'none', color:'rgba(200,180,100,0.5)', fontSize:20, cursor:'pointer', lineHeight:1 }}>×</button>
+    </div>
+  </div>
+);
+
+const modalInputStyle: React.CSSProperties = {
+  width: '100%',
+  background: 'rgba(5,15,28,0.8)',
+  border: '1px solid rgba(197,160,60,0.35)',
+  borderRadius: 5,
+  color: '#d6eaf8',
+  fontFamily: "'Exo 2', sans-serif",
+  fontSize: 14,
+  padding: '11px 14px',
+  outline: 'none',
+  boxSizing: 'border-box',
+  marginBottom: 14,
+};
+
+const goldBtn: React.CSSProperties = {
+  width: '100%',
+  background: 'linear-gradient(135deg, #c9a84c, #f5d17a, #c9a84c)',
+  border: '1px solid #a07830',
+  borderRadius: 5,
+  color: '#3a2000',
+  fontFamily: "'Exo 2', sans-serif",
+  fontSize: 13,
+  fontWeight: 700,
+  letterSpacing: '0.14em',
+  padding: '12px 0',
+  cursor: 'pointer',
+  boxShadow: '0 2px 12px rgba(180,130,0,0.4)',
+  marginTop: 4,
+};
+
+// ── Sign Up Modal ──────────────────────────────────────────────────────────────
+const SignUpModal = ({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password) return;
+    setError(''); setLoading(true);
+    try {
+      await signUp(email.trim(), password);
+      onSuccess();
+    } catch (err: any) {
+      setError(err.message || 'Sign up failed');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal title="CREATE ACCOUNT" onClose={onClose}>
+      <form onSubmit={handle} noValidate>
+        <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(''); }}
+          placeholder="Email" autoComplete="email" style={modalInputStyle} />
+        <input type="password" value={password} onChange={e => { setPassword(e.target.value); setError(''); }}
+          placeholder="Password" autoComplete="new-password" style={modalInputStyle} />
+        {error && <div style={{ color:'#f87171', fontSize:12, marginBottom:10, textAlign:'center', fontFamily:"'Exo 2',sans-serif" }}>{error}</div>}
+        <button type="submit" disabled={loading} style={goldBtn}>
+          {loading ? 'CREATING...' : 'CREATE ACCOUNT'}
+        </button>
+      </form>
+    </Modal>
+  );
+};
+
+// ── Forgot Password Modal ──────────────────────────────────────────────────────
+const ForgotModal = ({ onClose }: { onClose: () => void }) => {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setError(''); setLoading(true);
+    try {
+      await resetPassword(email.trim());
+      setSent(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to send reset email');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal title="FORGOT PASSWORD" onClose={onClose}>
+      {sent ? (
+        <div style={{ textAlign:'center', color:'#4ade80', fontFamily:"'Exo 2',sans-serif", fontSize:14, lineHeight:1.6 }}>
+          ✓ Reset email sent!<br/>
+          <span style={{ color:'#7a9ab8', fontSize:12 }}>Check your inbox and follow the link.</span>
+          <br/><br/>
+          <button onClick={onClose} style={goldBtn}>CLOSE</button>
+        </div>
+      ) : (
+        <form onSubmit={handle} noValidate>
+          <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(''); }}
+            placeholder="Your email address" autoComplete="email" style={modalInputStyle} />
+          {error && <div style={{ color:'#f87171', fontSize:12, marginBottom:10, textAlign:'center', fontFamily:"'Exo 2',sans-serif" }}>{error}</div>}
+          <button type="submit" disabled={loading} style={goldBtn}>
+            {loading ? 'SENDING...' : 'SEND RESET LINK'}
+          </button>
+        </form>
+      )}
+    </Modal>
+  );
+};
+
+// ── Main Landing ───────────────────────────────────────────────────────────────
 const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSlash, setShowSlash] = useState(false);
+  const [modal, setModal] = useState<'signup' | 'forgot' | null>(null);
   const [clickInfo, setClickInfo] = useState<string | null>(null);
-
   const emailRef = useRef<HTMLInputElement>(null);
   const { ref: wrapRef, bounds } = useImageBounds();
 
@@ -75,7 +215,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     setClickInfo('X: ' + xPct + '%   Y: ' + yPct + '%');
   };
 
-const handleSubmit = async (e?: React.FormEvent) => {
+  const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!email.trim() || !password) return;
     setError(''); setLoading(true);
@@ -121,10 +261,27 @@ const handleSubmit = async (e?: React.FormEvent) => {
     overflow: 'hidden' as const,
   });
 
+  const smallGoldBtn: React.CSSProperties = {
+    flex: 1,
+    background: 'linear-gradient(135deg, #c9a84c, #f5d17a, #c9a84c)',
+    border: '1px solid #a07830',
+    borderRadius: 4,
+    color: '#3a2000',
+    fontFamily: "'Exo 2', sans-serif",
+    fontSize: 'clamp(9px, 0.9vw, 12px)',
+    fontWeight: 700,
+    letterSpacing: '0.08em',
+    padding: '6px 4px',
+    cursor: 'pointer',
+    boxShadow: '0 2px 8px rgba(180,130,0,0.5)',
+    whiteSpace: 'nowrap' as const,
+    zIndex: 20,
+  };
+
   return (
     <div ref={wrapRef} onClick={handleClick} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700&display=swap');
         @keyframes slashFade { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
         @keyframes slashText { 0%{opacity:0;transform:scale(2)} 50%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(0.8)} }
         @keyframes spin { to { transform:rotate(360deg) } }
@@ -135,95 +292,71 @@ const handleSubmit = async (e?: React.FormEvent) => {
       <img src="/kensei-login-bg.png" alt="" draggable={false}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', userSelect: 'none', pointerEvents: 'none', zIndex: 1 }} />
 
+      <Snowflakes />
+      <SwordSlash active={showSlash} />
+
+      {/* Modals */}
+      {modal === 'signup' && (
+        <SignUpModal
+          onClose={() => setModal(null)}
+          onSuccess={() => { setModal(null); setError(''); alert('Account created! You can now log in.'); }}
+        />
+      )}
+      {modal === 'forgot' && <ForgotModal onClose={() => setModal(null)} />}
+
+      {/* Debug */}
       {clickInfo && (
         <div style={{ position: 'fixed', top: 10, left: 10, background: 'rgba(0,0,0,0.85)', color: '#fff', padding: '8px 14px', borderRadius: 6, fontFamily: 'monospace', fontSize: 14, zIndex: 999, pointerEvents: 'none' }}>
           {clickInfo}
         </div>
       )}
-      <Snowflakes />
-      <SwordSlash active={showSlash} />
 
       {bounds.width > 0 && (
         <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
 
-          {/* USERNAME — red outline debug */}
+          {/* USERNAME */}
           <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center' }}>
             <input ref={emailRef} type="text" value={email}
               onChange={e => { setEmail(e.target.value); setError(''); }}
               autoComplete="off" spellCheck={false} style={inputStyle} />
           </div>
 
-          {/* PASSWORD — blue outline debug */}
+          {/* PASSWORD */}
           <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center' }}>
             <input type="password" value={password}
               onChange={e => { setPassword(e.target.value); setError(''); }}
               autoComplete="current-password" style={inputStyle} />
           </div>
 
-          {/* ENTER — green outline debug */}
+          {/* ENTER */}
           <div style={{ ...box(0.6831, 0.05), pointerEvents: 'auto' }}>
             <button type="submit" disabled={loading}
-              style={{ width: '100%', height: '100%', background: 'transparent', cursor: 'pointer', padding: 0 }}>
+              style={{ width: '100%', height: '100%', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
               {loading && <div style={{ width: 22, height: 22, margin: '0 auto', border: '2px solid rgba(200,160,60,0.35)', borderTopColor: '#c8a028', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
             </button>
           </div>
 
-          {/* Forgot Password + Sign Up — gold, side by side, below ENTER */}
+          {/* FORGOT PASSWORD + SIGN UP — gold, side by side */}
           <div style={{
             position: 'absolute',
             left: bounds.left + BOX_LEFT * bounds.width,
-            top: bounds.top + (0.6831 + 0.05 + 0.03) * bounds.height,
+            top: bounds.top + (0.6831 + 0.05 + 0.025) * bounds.height,
             width: BOX_W * bounds.width,
             display: 'flex',
-            gap: '8px',
-            justifyContent: 'center',
+            gap: 8,
             zIndex: 20,
             pointerEvents: 'auto',
           }}>
-            <button
-              type="button"
-              onClick={() => alert('Forgot password coming soon!')}
-              style={{
-                flex: 1,
-                background: 'linear-gradient(135deg, #c9a84c, #f5d17a, #c9a84c)',
-                border: '1px solid #a07830',
-                borderRadius: 4,
-                color: '#3a2000',
-                fontFamily: "'Exo 2', sans-serif",
-                fontSize: 'clamp(9px, 0.9vw, 12px)',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                padding: '6px 4px',
-                cursor: 'pointer',
-                textShadow: '0 1px 0 rgba(255,255,255,0.3)',
-                boxShadow: '0 2px 8px rgba(180,130,0,0.5)',
-                whiteSpace: 'nowrap',
-              }}
-            >FORGOT PASSWORD</button>
-            <button
-              type="button"
-              onClick={() => alert('Sign up coming soon!')}
-              style={{
-                flex: 1,
-                background: 'linear-gradient(135deg, #c9a84c, #f5d17a, #c9a84c)',
-                border: '1px solid #a07830',
-                borderRadius: 4,
-                color: '#3a2000',
-                fontFamily: "'Exo 2', sans-serif",
-                fontSize: 'clamp(9px, 0.9vw, 12px)',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                padding: '6px 4px',
-                cursor: 'pointer',
-                textShadow: '0 1px 0 rgba(255,255,255,0.3)',
-                boxShadow: '0 2px 8px rgba(180,130,0,0.5)',
-                whiteSpace: 'nowrap',
-              }}
-            >SIGN UP</button>
+            <button type="button" onClick={(e) => { e.stopPropagation(); setModal('forgot'); }} style={smallGoldBtn}>
+              FORGOT PASSWORD
+            </button>
+            <button type="button" onClick={(e) => { e.stopPropagation(); setModal('signup'); }} style={smallGoldBtn}>
+              SIGN UP
+            </button>
           </div>
 
           {error && (
-            <div style={{ position: 'absolute', left: bounds.left + BOX_LEFT * bounds.width, top: bounds.top + 0.745 * bounds.height, width: BOX_W * bounds.width, textAlign: 'center', color: '#c0392b', fontFamily: 'Georgia', fontSize: 13, pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', left: bounds.left + BOX_LEFT * bounds.width, top: bounds.top + 0.80 * bounds.height, width: BOX_W * bounds.width, textAlign: 'center', color: '#c0392b', fontFamily: "'Exo 2',sans-serif", fontSize: 13, pointerEvents: 'none', zIndex: 20 }}>
               {error}
             </div>
           )}
