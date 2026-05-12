@@ -67,14 +67,16 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     width: '100%', height: '100%',
     background: 'transparent',
     border: 'none', outline: 'none',
-    color: '#1c2b3a',
+    color: '#0a1520',
     fontFamily: 'Cinzel, Georgia, serif',
-    fontSize: 'clamp(11px, 1.3vw, 16px)',
+    fontSize: 'clamp(13px, 1.5vw, 18px)',
     fontWeight: 700,
     letterSpacing: '0.14em',
     textAlign: 'center',
-    caretColor: '#3a6090',
+    caretColor: '#0a1520',
     padding: 0,
+    position: 'relative',
+    zIndex: 10,
     boxSizing: 'border-box' as const,
   };
 
@@ -103,16 +105,16 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
       `}</style>
 
       <img src="/kensei-login-bg.png" alt="" draggable={false}
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', userSelect: 'none', pointerEvents: 'none' }} />
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', userSelect: 'none', pointerEvents: 'none', zIndex: 1 }} />
 
       <SwordSlash active={showSlash} />
 
       {bounds.width > 0 && (
-        <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+        <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
 
           {/* USERNAME — center at 49.74% */}
           <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <input ref={emailRef} type="email" value={email}
+            <input ref={emailRef} type="text" value={email}
               onChange={e => { setEmail(e.target.value); setError(''); }}
               autoComplete="email" spellCheck={false} style={inputStyle} />
           </div>
