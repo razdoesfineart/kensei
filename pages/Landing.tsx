@@ -36,24 +36,10 @@ const Snowflakes = () => {
     size: Math.random() * 10 + 6,
     opacity: Math.random() * 0.45 + 0.25,
   })), []);
-
   return (
     <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 4 }}>
       {flakes.map(f => (
-        <div
-          key={f.id}
-          style={{
-            position: 'absolute',
-            left: f.left + '%',
-            top: '-30px',
-            fontSize: f.size + 'px',
-            color: 'rgba(200,230,255,' + f.opacity + ')',
-            textShadow: '0 0 6px rgba(180,215,255,0.8)',
-            animation: 'snowfall ' + f.duration + 's linear ' + f.delay + 's infinite',
-          }}
-        >
-          ❄
-        </div>
+        <div key={f.id} style={{ position: 'absolute', left: f.left + '%', top: '-30px', fontSize: f.size + 'px', color: 'rgba(200,230,255,' + f.opacity + ')', textShadow: '0 0 6px rgba(180,215,255,0.8)', animation: 'snowfall ' + f.duration + 's linear ' + f.delay + 's infinite' }}>❄</div>
       ))}
     </div>
   );
@@ -75,10 +61,18 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSlash, setShowSlash] = useState(false);
+  const [clickInfo, setClickInfo] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const { ref: wrapRef, bounds } = useImageBounds();
 
   useEffect(() => { setTimeout(() => emailRef.current?.focus(), 200); }, []);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (bounds.width === 0) return;
+    const xPct = ((e.clientX - bounds.left) / bounds.width * 100).toFixed(2);
+    const yPct = ((e.clientY - bounds.top)  / bounds.height * 100).toFixed(2);
+    setClickInfo('X: ' + xPct + '%   Y: ' + yPct + '%');
+  };
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -96,11 +90,9 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   };
 
   const inputStyle: React.CSSProperties = {
-    width: '100%',
-    height: '100%',
+    width: '100%', height: '100%',
     background: 'transparent',
-    border: 'none',
-    outline: 'none',
+    border: 'none', outline: 'none',
     color: '#0a1520',
     fontFamily: "'Shippori Mincho', serif",
     fontSize: 'clamp(15px, 1.8vw, 22px)',
@@ -128,18 +120,13 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   });
 
   return (
-    <div ref={wrapRef} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
+    <div ref={wrapRef} onClick={handleClick} style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: '#050c18' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500&display=swap');
         @keyframes slashFade { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
         @keyframes slashText { 0%{opacity:0;transform:scale(2)} 50%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(0.8)} }
         @keyframes spin { to { transform:rotate(360deg) } }
-        @keyframes snowfall {
-          0%   { transform: translateY(-30px) rotate(0deg); opacity: 0; }
-          10%  { opacity: 1; }
-          90%  { opacity: 0.7; }
-          100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
+        @keyframes snowfall { 0%{transform:translateY(-30px) rotate(0deg);opacity:0} 10%{opacity:1} 90%{opacity:0.7} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
         input:-webkit-autofill { -webkit-box-shadow:0 0 0 100px transparent inset!important; -webkit-text-fill-color:#0a1520!important; }
       `}</style>
 
@@ -149,24 +136,34 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
       <Snowflakes />
       <SwordSlash active={showSlash} />
 
+      {/* DEBUG: click coords */}
+      {clickInfo && (
+        <div style={{ position: 'fixed', top: 10, left: 10, background: 'rgba(0,0,0,0.85)', color: '#fff', padding: '8px 14px', borderRadius: 6, fontFamily: 'monospace', fontSize: 14, zIndex: 999, pointerEvents: 'none' }}>
+          {clickInfo}
+        </div>
+      )}
+
       {bounds.width > 0 && (
         <form onSubmit={handleSubmit} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
 
-          <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center' }}>
+          {/* USERNAME — red outline debug */}
+          <div style={{ ...box(0.4974, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', outline: '2px solid red' }}>
             <input ref={emailRef} type="text" value={email}
               onChange={e => { setEmail(e.target.value); setError(''); }}
               autoComplete="off" spellCheck={false} style={inputStyle} />
           </div>
 
-          <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center' }}>
+          {/* PASSWORD — blue outline debug */}
+          <div style={{ ...box(0.5762, 0.04), pointerEvents: 'auto', display: 'flex', alignItems: 'center', outline: '2px solid blue' }}>
             <input type="password" value={password}
               onChange={e => { setPassword(e.target.value); setError(''); }}
               autoComplete="current-password" style={inputStyle} />
           </div>
 
+          {/* ENTER — green outline debug */}
           <div style={{ ...box(0.6831, 0.05), pointerEvents: 'auto' }}>
             <button type="submit" disabled={loading}
-              style={{ width: '100%', height: '100%', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
+              style={{ width: '100%', height: '100%', background: 'transparent', border: '2px solid green', cursor: 'pointer', padding: 0 }}>
               {loading && <div style={{ width: 22, height: 22, margin: '0 auto', border: '2px solid rgba(200,160,60,0.35)', borderTopColor: '#c8a028', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
             </button>
           </div>
