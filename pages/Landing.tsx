@@ -69,7 +69,7 @@ const Landing = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
     border: 'none', outline: 'none',
     color: '#0a1520',
     fontFamily: "'Shippori Mincho', serif",
-    fontSize: 'clamp(11px, 1.2vw, 15px)',
+    fontSize: 'clamp(15px, 1.8vw, 22px)',
     fontWeight: 400,
     letterSpacing: '0.06em',
     textAlign: 'left',
