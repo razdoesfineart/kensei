@@ -94,14 +94,15 @@ const handleSubmit = async (e?: React.FormEvent) => {
     textAlign: 'left',
     caretColor: '#0a1520',
     paddingLeft: '45%',
-    paddingRight: '8%',
+    paddingRight: '0',
+    maxWidth: '87.5%',
     position: 'relative',
     zIndex: 10,
     boxSizing: 'border-box',
   };
 
   const BOX_LEFT = 0.376;
-  const BOX_W    = 0.2178;
+  const BOX_W    = 0.249;
 
   const box = (centerPct: number, halfH: number) => ({
     position: 'absolute' as const,
