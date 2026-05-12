@@ -9,12 +9,38 @@ const AuthWrapper = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getSession().then(s => { setSession(s); setLoading(false); }).catch(() => setLoading(false));
-    const { data: { subscription } } = onAuthChange((event, newSession) => {
-      setSession(newSession);
-      if (event === 'SIGNED_OUT') setSession(null);
-    });
-    return () => subscription.unsubscribe();
+    // Hard 4-second timeout — if Supabase doesn't respond, treat as logged out
+    const timeout = setTimeout(() => {
+      console.warn('Kensei: Supabase session check timed out, proceeding as logged out');
+      setLoading(false);
+    }, 4000);
+
+    getSession()
+      .then(s => {
+        clearTimeout(timeout);
+        setSession(s);
+        setLoading(false);
+      })
+      .catch(() => {
+        clearTimeout(timeout);
+        setLoading(false);
+      });
+
+    let subscription: any = null;
+    try {
+      const { data } = onAuthChange((event: string, newSession: any) => {
+        setSession(newSession);
+        if (event === 'SIGNED_OUT') setSession(null);
+      });
+      subscription = data?.subscription;
+    } catch (e) {
+      console.warn('Kensei: onAuthChange failed', e);
+    }
+
+    return () => {
+      clearTimeout(timeout);
+      subscription?.unsubscribe?.();
+    };
   }, []);
 
   if (loading) {
@@ -32,5 +58,5 @@ const AuthWrapper = () => {
   return <App userId={session.user.id} userEmail={session.user.email} />;
 };
 
-const root = createRoot(document.getElementById('root'));
+const root = createRoot(document.getElementById('root')!);
 root.render(<AuthWrapper />);
